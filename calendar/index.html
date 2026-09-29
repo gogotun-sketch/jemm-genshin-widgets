@@ -34,38 +34,35 @@
 
             background: #191919;
 
-            font-family: "Manrope", sans-serif;
+            font-family:
+                "Manrope",
+                sans-serif;
         }
 
-        body {
-            padding: 0;
+
+        /* =========================
+           ВЕСЬ ВИДЖЕТ
+           ========================= */
+
+        .calendar-widget {
+            position: relative;
+
+            width: 100%;
+            height: 360px;
+
+            overflow: hidden;
+
+            border-radius: 16px;
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            color: #fff8ec;
         }
 
 
-        /* ------------------------- */
-        /* ОСНОВНОЙ ВИДЖЕТ */
-        /* ------------------------- */
-
-       .calendar-widget {
-    position: relative;
-
-    width: 100%;
-    height: 390px;
-    min-height: 0;
-
-    overflow: hidden;
-
-    border-radius: 16px;
-
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-
-    color: #fff8ec;
-}
-
-
-        /* общее затемнение картинки */
+        /* легкое затемнение всего фона */
 
         .calendar-widget::before {
             content: "";
@@ -76,75 +73,91 @@
             background:
                 linear-gradient(
                     90deg,
-                    rgba(18, 11, 7, 0.48) 0%,
-                    rgba(18, 11, 7, 0.32) 45%,
-                    rgba(18, 11, 7, 0.18) 100%
+
+                    rgba(18, 11, 7, 0.30) 0%,
+                    rgba(18, 11, 7, 0.18) 38%,
+                    rgba(18, 11, 7, 0.04) 75%,
+                    transparent 100%
                 );
 
             z-index: 1;
         }
 
 
-        /* ------------------------- */
-        /* КАЛЕНДАРНАЯ ПАНЕЛЬ */
-        /* ------------------------- */
+        /* =========================
+           ПАНЕЛЬ КАЛЕНДАРЯ
+           ========================= */
 
-       .calendar-panel {
-    position: relative;
-    z-index: 2;
+        .calendar-panel {
+            position: relative;
 
-    width: 390px;
-    max-width: calc(100% - 32px);
+            z-index: 2;
 
-    height: calc(100% - 32px);
+            width: 325px;
 
-    margin: 16px;
+            margin: 16px;
 
-    padding: 22px 26px 24px;
+            padding:
+                19px
+                21px
+                18px;
 
-    border-radius: 18px;
+            border-radius: 18px;
 
-    background: rgba(18, 13, 10, 0.52);
+            background:
+                rgba(20, 12, 8, 0.57);
 
-    border:
-        1px solid
-        rgba(255, 240, 220, 0.10);
+            border:
+                1px solid
+                rgba(255, 236, 214, 0.10);
 
-    backdrop-filter: blur(7px);
-    -webkit-backdrop-filter: blur(7px);
+            backdrop-filter:
+                blur(7px);
 
-    box-shadow:
-        0 12px 40px
-        rgba(0, 0, 0, 0.22);
-}
-        /* ------------------------- */
-        /* МЕСЯЦ */
-        /* ------------------------- */
+            -webkit-backdrop-filter:
+                blur(7px);
 
-       .month-title {
-    font-family: "Cormorant Garamond", serif;
+            box-shadow:
+                0 12px 34px
+                rgba(0, 0, 0, 0.22);
+        }
 
-    font-size: 38px;
-    line-height: 1;
 
-    font-weight: 600;
+        /* =========================
+           ЗАГОЛОВОК
+           ========================= */
 
-    text-transform: lowercase;
+        .month-title {
+            font-family:
+                "Cormorant Garamond",
+                serif;
 
-    letter-spacing: -0.025em;
+            font-size: 34px;
 
-    color: #fff5e6;
-}
+            line-height: 0.95;
+
+            font-weight: 600;
+
+            text-transform: lowercase;
+
+            letter-spacing: -0.025em;
+
+            color: #fff5e6;
+
+            text-shadow:
+                0 3px 12px
+                rgba(0, 0, 0, 0.45);
+        }
 
 
         .year {
-            margin-top: 4px;
+            margin-top: 5px;
 
-            font-size: 12px;
+            font-size: 10px;
 
             font-weight: 500;
 
-            letter-spacing: 0.13em;
+            letter-spacing: 0.14em;
 
             color:
                 rgba(255, 235, 210, 0.62);
@@ -152,23 +165,27 @@
 
 
         .divider {
-    width: 54px;
-    height: 1px;
+            width: 42px;
+            height: 1px;
 
-    margin: 14px 0 16px;
+            margin:
+                13px
+                0
+                13px;
 
-    background:
-        linear-gradient(
-            90deg,
-            rgba(231, 180, 111, 0.95),
-            transparent
-        );
-}
+            background:
+                linear-gradient(
+                    90deg,
+
+                    rgba(231, 180, 111, 0.95),
+                    transparent
+                );
+        }
 
 
-        /* ------------------------- */
-        /* ДНИ НЕДЕЛИ */
-        /* ------------------------- */
+        /* =========================
+           СЕТКА
+           ========================= */
 
         .weekdays,
         .days {
@@ -177,57 +194,71 @@
             grid-template-columns:
                 repeat(7, 1fr);
 
-            gap: 7px;
+            column-gap: 2px;
         }
 
 
+        .weekdays {
+            margin-bottom: 3px;
+        }
+
+
+        /* =========================
+           ДНИ НЕДЕЛИ
+           ========================= */
+
         .weekday {
-            padding-bottom: 8px;
+            height: 25px;
 
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-            font-size: 10px;
+            font-size: 9px;
 
             font-weight: 600;
 
-            letter-spacing: 0.08em;
+            letter-spacing: 0.06em;
 
             text-transform: uppercase;
 
             color:
-                rgba(255, 236, 212, 0.52);
+                rgba(255, 236, 212, 0.48);
         }
 
 
-        /* ------------------------- */
-        /* ДНИ */
-        /* ------------------------- */
+        /* =========================
+           ЧИСЛА
+           ========================= */
 
         .day {
-    position: relative;
+            position: relative;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+            height: 35px;
 
-    height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-    border-radius: 50%;
+            border-radius: 50%;
 
-    font-family:
-        "Cormorant Garamond",
-        serif;
+            font-family:
+                "Cormorant Garamond",
+                serif;
 
-    font-size: 19px;
-    font-weight: 600;
+            font-size: 17px;
 
-    color:
-        rgba(255, 247, 236, 0.90);
+            line-height: 1;
 
-    text-shadow:
-        0 2px 7px
-        rgba(0, 0, 0, 0.48);
-}
+            font-weight: 600;
+
+            color:
+                rgba(255, 247, 236, 0.90);
+
+            text-shadow:
+                0 2px 7px
+                rgba(0, 0, 0, 0.48);
+        }
 
 
         .day.empty {
@@ -239,31 +270,36 @@
 
         .day.weekend {
             color:
-                rgba(239, 207, 171, 0.82);
+                rgba(239, 207, 171, 0.78);
         }
 
 
-        /* ------------------------- */
-        /* СЕГОДНЯ */
-        /* ------------------------- */
+        /* =========================
+           СЕГОДНЯ
+           ========================= */
 
         .day.today {
+            width: 33px;
+            height: 33px;
+
+            justify-self: center;
+
             color: #2b1a0f;
 
             font-weight: 700;
 
             background:
-                rgba(255, 225, 174, 0.92);
+                rgba(255, 225, 174, 0.93);
 
             box-shadow:
                 0 0 0 1px
-                    rgba(255, 245, 225, 0.48),
+                    rgba(255, 245, 225, 0.44),
 
-                0 0 22px
-                    rgba(255, 196, 112, 0.35),
+                0 0 17px
+                    rgba(255, 196, 112, 0.27),
 
-                0 5px 16px
-                    rgba(0, 0, 0, 0.26);
+                0 4px 12px
+                    rgba(0, 0, 0, 0.25);
 
             text-shadow: none;
         }
@@ -274,38 +310,42 @@
 
             position: absolute;
 
-            inset: -4px;
+            inset: -3px;
 
             border-radius: 50%;
 
             border:
                 1px solid
-                rgba(255, 225, 177, 0.32);
+                rgba(255, 225, 177, 0.28);
         }
 
 
-        /* ------------------------- */
-        /* МОБИЛЬНАЯ/УЗКАЯ ВЕРСИЯ */
-        /* ------------------------- */
+        /* =========================
+           УЗКИЙ ВИДЖЕТ
+           ========================= */
 
-        @media (max-width: 650px) {
+        @media (max-width: 430px) {
 
             .calendar-widget {
-                min-height: 430px;
+                height: 350px;
             }
+
 
             .calendar-panel {
-                width: calc(100% - 32px);
+                width:
+                    calc(100% - 24px);
 
-                margin: 16px;
+                margin: 12px;
 
                 padding:
-                    23px 20px 24px;
+                    18px
+                    18px
+                    17px;
             }
 
-            .weekdays,
-            .days {
-                gap: 4px;
+
+            .day {
+                height: 33px;
             }
 
         }
@@ -326,14 +366,14 @@
         <div
             class="month-title"
             id="month-title"
-        >
-        </div>
+        ></div>
+
 
         <div
             class="year"
             id="year"
-        >
-        </div>
+        ></div>
+
 
         <div class="divider"></div>
 
@@ -354,8 +394,7 @@
         <div
             class="days"
             id="days"
-        >
-        </div>
+        ></div>
 
     </div>
 
@@ -414,9 +453,7 @@
             now.getDate();
 
 
-        /* ------------------------- */
-        /* ФОН */
-        /* ------------------------- */
+        /* фон текущего месяца */
 
         document.getElementById(
             "calendar-widget"
@@ -424,9 +461,7 @@
             `url("./images/${backgrounds[month]}")`;
 
 
-        /* ------------------------- */
-        /* ЗАГОЛОВОК */
-        /* ------------------------- */
+        /* название месяца */
 
         document.getElementById(
             "month-title"
@@ -434,15 +469,15 @@
             monthNames[month];
 
 
+        /* год */
+
         document.getElementById(
             "year"
         ).textContent =
             year;
 
 
-        /* ------------------------- */
-        /* ПЕРВЫЙ ДЕНЬ МЕСЯЦА */
-        /* ------------------------- */
+        /* первый день месяца */
 
         const firstDay =
             new Date(
@@ -459,7 +494,6 @@
 
         Нам нужно:
         понедельник = 0
-        ...
         воскресенье = 6
         */
 
@@ -469,9 +503,7 @@
             ) % 7;
 
 
-        /* ------------------------- */
-        /* КОЛИЧЕСТВО ДНЕЙ */
-        /* ------------------------- */
+        /* сколько дней в месяце */
 
         const daysInMonth =
             new Date(
@@ -491,7 +523,7 @@
             "";
 
 
-        /* пустые ячейки до 1 числа */
+        /* пустые клетки до первого числа */
 
         for (
             let i = 0;
@@ -516,7 +548,7 @@
         }
 
 
-        /* сами числа */
+        /* числа месяца */
 
         for (
             let day = 1;
@@ -546,9 +578,7 @@
                 ) % 7;
 
 
-            /*
-            Суббота и воскресенье
-            */
+            /* суббота и воскресенье */
 
             if (
                 column === 5 ||
@@ -562,9 +592,7 @@
             }
 
 
-            /*
-            Сегодняшний день
-            */
+            /* текущая дата */
 
             if (
                 day === today
@@ -592,10 +620,9 @@
 
 
     /*
-    Перестраиваем календарь раз в минуту.
-    Благодаря этому, если страница Notion
-    остается открытой ночью, дата и месяц
-    сами переключатся после полуночи.
+    Раз в минуту проверяем дату,
+    чтобы после полуночи текущий день
+    и новый месяц переключились сами.
     */
 
     setInterval(
