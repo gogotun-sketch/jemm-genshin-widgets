@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Calendar</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background: #191919;
+
+            font-family: "Manrope", sans-serif;
+        }
+
+        body {
+            padding: 0;
+        }
+
+
+        /* ------------------------- */
+        /* ОСНОВНОЙ ВИДЖЕТ */
+        /* ------------------------- */
+
+        .calendar-widget {
+            position: relative;
+
+            width: 100%;
+            min-height: 460px;
+
+            overflow: hidden;
+
+            border-radius: 16px;
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            color: #fff8ec;
+        }
+
+
+        /* общее затемнение картинки */
+
+        .calendar-widget::before {
+            content: "";
+
+            position: absolute;
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(18, 11, 7, 0.48) 0%,
+                    rgba(18, 11, 7, 0.32) 45%,
+                    rgba(18, 11, 7, 0.18) 100%
+                );
+
+            z-index: 1;
+        }
+
+
+        /* ------------------------- */
+        /* КАЛЕНДАРНАЯ ПАНЕЛЬ */
+        /* ------------------------- */
+
+        .calendar-panel {
+            position: relative;
+            z-index: 2;
+
+            width: min(590px, calc(100% - 48px));
+
+            margin: 24px;
+
+            padding: 28px 30px 30px;
+
+            border-radius: 18px;
+
+            background:
+                rgba(18, 13, 10, 0.52);
+
+            border:
+                1px solid
+                rgba(255, 240, 220, 0.10);
+
+            backdrop-filter:
+                blur(7px);
+
+            -webkit-backdrop-filter:
+                blur(7px);
+
+            box-shadow:
+                0 12px 40px
+                rgba(0, 0, 0, 0.22);
+        }
+
+
+        /* ------------------------- */
+        /* МЕСЯЦ */
+        /* ------------------------- */
+
+        .month-title {
+            font-family:
+                "Cormorant Garamond",
+                serif;
+
+            font-size:
+                clamp(34px, 4vw, 48px);
+
+            line-height: 1;
+
+            font-weight: 600;
+
+            text-transform: lowercase;
+
+            letter-spacing: -0.025em;
+
+            color: #fff5e6;
+
+            text-shadow:
+                0 3px 12px
+                rgba(0, 0, 0, 0.45);
+        }
+
+
+        .year {
+            margin-top: 4px;
+
+            font-size: 12px;
+
+            font-weight: 500;
+
+            letter-spacing: 0.13em;
+
+            color:
+                rgba(255, 235, 210, 0.62);
+        }
+
+
+        .divider {
+            width: 54px;
+            height: 1px;
+
+            margin: 18px 0 21px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(231, 180, 111, 0.95),
+                    transparent
+                );
+        }
+
+
+        /* ------------------------- */
+        /* ДНИ НЕДЕЛИ */
+        /* ------------------------- */
+
+        .weekdays,
+        .days {
+            display: grid;
+
+            grid-template-columns:
+                repeat(7, 1fr);
+
+            gap: 7px;
+        }
+
+
+        .weekday {
+            padding-bottom: 8px;
+
+            text-align: center;
+
+            font-size: 10px;
+
+            font-weight: 600;
+
+            letter-spacing: 0.08em;
+
+            text-transform: uppercase;
+
+            color:
+                rgba(255, 236, 212, 0.52);
+        }
+
+
+        /* ------------------------- */
+        /* ДНИ */
+        /* ------------------------- */
+
+        .day {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            aspect-ratio: 1 / 1;
+
+            border-radius: 50%;
+
+            font-family:
+                "Cormorant Garamond",
+                serif;
+
+            font-size:
+                clamp(17px, 2vw, 23px);
+
+            font-weight: 600;
+
+            color:
+                rgba(255, 247, 236, 0.90);
+
+            text-shadow:
+                0 2px 7px
+                rgba(0, 0, 0, 0.48);
+        }
+
+
+        .day.empty {
+            visibility: hidden;
+        }
+
+
+        /* выходные */
+
+        .day.weekend {
+            color:
+                rgba(239, 207, 171, 0.82);
+        }
+
+
+        /* ------------------------- */
+        /* СЕГОДНЯ */
+        /* ------------------------- */
+
+        .day.today {
+            color: #2b1a0f;
+
+            font-weight: 700;
+
+            background:
+                rgba(255, 225, 174, 0.92);
+
+            box-shadow:
+                0 0 0 1px
+                    rgba(255, 245, 225, 0.48),
+
+                0 0 22px
+                    rgba(255, 196, 112, 0.35),
+
+                0 5px 16px
+                    rgba(0, 0, 0, 0.26);
+
+            text-shadow: none;
+        }
+
+
+        .day.today::after {
+            content: "";
+
+            position: absolute;
+
+            inset: -4px;
+
+            border-radius: 50%;
+
+            border:
+                1px solid
+                rgba(255, 225, 177, 0.32);
+        }
+
+
+        /* ------------------------- */
+        /* МОБИЛЬНАЯ/УЗКАЯ ВЕРСИЯ */
+        /* ------------------------- */
+
+        @media (max-width: 650px) {
+
+            .calendar-widget {
+                min-height: 430px;
+            }
+
+            .calendar-panel {
+                width: calc(100% - 32px);
+
+                margin: 16px;
+
+                padding:
+                    23px 20px 24px;
+            }
+
+            .weekdays,
+            .days {
+                gap: 4px;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<div
+    class="calendar-widget"
+    id="calendar-widget"
+>
+
+    <div class="calendar-panel">
+
+        <div
+            class="month-title"
+            id="month-title"
+        >
+        </div>
+
+        <div
+            class="year"
+            id="year"
+        >
+        </div>
+
+        <div class="divider"></div>
+
+
+        <div class="weekdays">
+
+            <div class="weekday">пн</div>
+            <div class="weekday">вт</div>
+            <div class="weekday">ср</div>
+            <div class="weekday">чт</div>
+            <div class="weekday">пт</div>
+            <div class="weekday">сб</div>
+            <div class="weekday">вс</div>
+
+        </div>
+
+
+        <div
+            class="days"
+            id="days"
+        >
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const monthNames = [
+        "январь",
+        "февраль",
+        "март",
+        "апрель",
+        "май",
+        "июнь",
+        "июль",
+        "август",
+        "сентябрь",
+        "октябрь",
+        "ноябрь",
+        "декабрь"
+    ];
+
+
+    const backgrounds = [
+        "january.png",
+        "february.png",
+        "march.png",
+        "april.png",
+        "may.png",
+        "june.png",
+        "july.png",
+        "august.png",
+        "september.png",
+        "october.png",
+        "november.png",
+        "december.png"
+    ];
+
+
+    function buildCalendar() {
+
+        const now =
+            new Date();
+
+
+        const year =
+            now.getFullYear();
+
+
+        const month =
+            now.getMonth();
+
+
+        const today =
+            now.getDate();
+
+
+        /* ------------------------- */
+        /* ФОН */
+        /* ------------------------- */
+
+        document.getElementById(
+            "calendar-widget"
+        ).style.backgroundImage =
+            `url("./images/${backgrounds[month]}")`;
+
+
+        /* ------------------------- */
+        /* ЗАГОЛОВОК */
+        /* ------------------------- */
+
+        document.getElementById(
+            "month-title"
+        ).textContent =
+            monthNames[month];
+
+
+        document.getElementById(
+            "year"
+        ).textContent =
+            year;
+
+
+        /* ------------------------- */
+        /* ПЕРВЫЙ ДЕНЬ МЕСЯЦА */
+        /* ------------------------- */
+
+        const firstDay =
+            new Date(
+                year,
+                month,
+                1
+            );
+
+
+        /*
+        JS:
+        воскресенье = 0
+        понедельник = 1
+
+        Нам нужно:
+        понедельник = 0
+        ...
+        воскресенье = 6
+        */
+
+        const startOffset =
+            (
+                firstDay.getDay() + 6
+            ) % 7;
+
+
+        /* ------------------------- */
+        /* КОЛИЧЕСТВО ДНЕЙ */
+        /* ------------------------- */
+
+        const daysInMonth =
+            new Date(
+                year,
+                month + 1,
+                0
+            ).getDate();
+
+
+        const daysContainer =
+            document.getElementById(
+                "days"
+            );
+
+
+        daysContainer.innerHTML =
+            "";
+
+
+        /* пустые ячейки до 1 числа */
+
+        for (
+            let i = 0;
+            i < startOffset;
+            i++
+        ) {
+
+            const empty =
+                document.createElement(
+                    "div"
+                );
+
+
+            empty.className =
+                "day empty";
+
+
+            daysContainer.appendChild(
+                empty
+            );
+
+        }
+
+
+        /* сами числа */
+
+        for (
+            let day = 1;
+            day <= daysInMonth;
+            day++
+        ) {
+
+            const dayElement =
+                document.createElement(
+                    "div"
+                );
+
+
+            dayElement.className =
+                "day";
+
+
+            dayElement.textContent =
+                day;
+
+
+            const column =
+                (
+                    startOffset +
+                    day -
+                    1
+                ) % 7;
+
+
+            /*
+            Суббота и воскресенье
+            */
+
+            if (
+                column === 5 ||
+                column === 6
+            ) {
+
+                dayElement.classList.add(
+                    "weekend"
+                );
+
+            }
+
+
+            /*
+            Сегодняшний день
+            */
+
+            if (
+                day === today
+            ) {
+
+                dayElement.classList.add(
+                    "today"
+                );
+
+            }
+
+
+            daysContainer.appendChild(
+                dayElement
+            );
+
+        }
+
+    }
+
+
+    /* первый запуск */
+
+    buildCalendar();
+
+
+    /*
+    Перестраиваем календарь раз в минуту.
+    Благодаря этому, если страница Notion
+    остается открытой ночью, дата и месяц
+    сами переключатся после полуночи.
+    */
+
+    setInterval(
+        buildCalendar,
+        60 * 1000
+    );
+
+</script>
+
+</body>
+</html>
