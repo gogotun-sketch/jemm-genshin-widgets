@@ -21,27 +21,29 @@
         }
 
         html,
-body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    min-height: 100%;
+        body {
+            margin: 0;
+            padding: 0;
 
-    background: #191919 !important;
+            width: 100%;
+            min-height: 100%;
 
-    font-family: "Manrope", sans-serif;
-}
+            background: #191919;
 
-.widgets {
-    width: 100%;
+            font-family: "Manrope", sans-serif;
+        }
 
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
 
-    gap: 14px;
+        .widgets {
+            width: 100%;
 
-    background: #191919;
-}
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 14px;
+
+            background: #191919;
+        }
 
 
         /* ----------------------------- */
@@ -69,7 +71,7 @@ body {
         }
 
 
-        /* затемнение снизу */
+        /* затемнение картинки */
 
         .card::before {
             content: "";
@@ -116,15 +118,15 @@ body {
         /* ----------------------------- */
 
         .card-days {
-            background-image: url("./images/days.png");
+            background-image: url("./images/days.jpg");
         }
 
         .card-achievements {
-            background-image: url("./images/achievements.png");
+            background-image: url("./images/achievements.jpg");
         }
 
         .card-characters {
-            background-image: url("./images/characters.png");
+            background-image: url("./images/characters.jpg");
         }
 
 
@@ -145,8 +147,6 @@ body {
         }
 
 
-        /* большая цифра */
-
         .number {
             font-family: "Cormorant Garamond", serif;
 
@@ -163,10 +163,10 @@ body {
             text-shadow:
                 0 3px 10px rgba(0, 0, 0, 0.62),
                 0 7px 24px rgba(0, 0, 0, 0.32);
+
+            transition: opacity 0.25s ease;
         }
 
-
-        /* из 1844 / из 129 / дней */
 
         .meta {
             margin-top: 6px;
@@ -183,8 +183,6 @@ body {
                 0 2px 7px rgba(0, 0, 0, 0.65);
         }
 
-
-        /* фраза */
 
         .phrase {
             margin-top: 13px;
@@ -205,10 +203,6 @@ body {
                 0 5px 18px rgba(0, 0, 0, 0.38);
         }
 
-
-        /* ----------------------------- */
-        /* УЗКИЕ ЭКРАНЫ */
-        /* ----------------------------- */
 
         @media (max-width: 850px) {
 
@@ -231,7 +225,7 @@ body {
 <div class="widgets">
 
 
-    <!-- ДНИ -->
+    <!-- ДНИ В ТЕЙВАТЕ -->
 
     <article class="card card-days">
 
@@ -241,7 +235,7 @@ body {
                 class="number"
                 id="days-number"
             >
-                2192
+                —
             </div>
 
             <div class="meta">
@@ -268,14 +262,14 @@ body {
                 class="number"
                 id="achievements-number"
             >
-                1457
+                —
             </div>
 
             <div
                 class="meta"
                 id="achievements-meta"
             >
-                из 1844
+                из —
             </div>
 
             <div class="phrase">
@@ -298,14 +292,14 @@ body {
                 class="number"
                 id="characters-number"
             >
-                102
+                —
             </div>
 
             <div
                 class="meta"
                 id="characters-meta"
             >
-                из 129
+                из —
             </div>
 
             <div class="phrase">
@@ -320,26 +314,8 @@ body {
 </div>
 
 
+
 <script>
-
-    /* -------------------------------- */
-    /* ПОКА СТАТИЧЕСКИЕ СЧЕТЧИКИ */
-    /* -------------------------------- */
-
-    const stats = {
-
-        achievements: {
-            current: 1457,
-            total: 1844
-        },
-
-        characters: {
-            current: 102,
-            total: 129
-        }
-
-    };
-
 
     /* -------------------------------- */
     /* ДНИ В ТЕЙВАТЕ */
@@ -347,32 +323,41 @@ body {
 
     function calculateTeyvatDays() {
 
-        const start =
-            new Date(2020, 8, 29);
+        /*
+        Считаем через UTC, чтобы переходы
+        на летнее/зимнее время нигде
+        не могли испортить счетчик.
+        */
 
-        const today =
+        const start =
+            Date.UTC(
+                2020,
+                8,
+                29
+            );
+
+
+        const now =
             new Date();
 
 
-        start.setHours(
-            0,
-            0,
-            0,
-            0
-        );
-
-
-        today.setHours(
-            0,
-            0,
-            0,
-            0
-        );
+        const today =
+            Date.UTC(
+                now.getFullYear(),
+                now.getMonth(),
+                now.getDate()
+            );
 
 
         const difference =
             today - start;
 
+
+        /*
+        +1:
+        29 сентября 2020 считается
+        первым днем в Тейвате.
+        */
 
         return (
             Math.floor(
@@ -383,44 +368,131 @@ body {
     }
 
 
-    document.getElementById(
-        "days-number"
-    ).textContent =
-        calculateTeyvatDays();
+    function updateDays() {
 
+        document.getElementById(
+            "days-number"
+        ).textContent =
+            calculateTeyvatDays();
 
-    /* -------------------------------- */
-    /* ДОСТИЖЕНИЯ */
-    /* -------------------------------- */
+    }
 
-    document.getElementById(
-        "achievements-number"
-    ).textContent =
-        stats.achievements.current;
-
-
-    document.getElementById(
-        "achievements-meta"
-    ).textContent =
-        "из " +
-        stats.achievements.total;
 
 
     /* -------------------------------- */
-    /* ПЕРСОНАЖИ */
+    /* ДАННЫЕ ИЗ NOTION */
     /* -------------------------------- */
 
-    document.getElementById(
-        "characters-number"
-    ).textContent =
-        stats.characters.current;
+    async function loadGenshinStats() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/.netlify/functions/genshin-stats"
+                );
 
 
-    document.getElementById(
-        "characters-meta"
-    ).textContent =
-        "из " +
-        stats.characters.total;
+            if (!response.ok) {
+
+                throw new Error(
+                    `Ошибка загрузки статистики: ${response.status}`
+                );
+
+            }
+
+
+            const stats =
+                await response.json();
+
+
+            /* ДОСТИЖЕНИЯ */
+
+            document.getElementById(
+                "achievements-number"
+            ).textContent =
+                stats.achievements.current;
+
+
+            document.getElementById(
+                "achievements-meta"
+            ).textContent =
+                "из " +
+                stats.achievements.total;
+
+
+
+            /* ПЕРСОНАЖИ */
+
+            document.getElementById(
+                "characters-number"
+            ).textContent =
+                stats.characters.current;
+
+
+            document.getElementById(
+                "characters-meta"
+            ).textContent =
+                "из " +
+                stats.characters.total;
+
+
+            console.log(
+                "Genshin stats updated:",
+                stats.updatedAt
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Не удалось обновить статистику:",
+                error
+            );
+
+        }
+
+    }
+
+
+
+    /* -------------------------------- */
+    /* ПЕРВЫЙ ЗАПУСК */
+    /* -------------------------------- */
+
+    updateDays();
+
+    loadGenshinStats();
+
+
+
+    /* -------------------------------- */
+    /* АВТООБНОВЛЕНИЕ */
+    /* -------------------------------- */
+
+
+    /*
+    Проверяем статистику Notion
+    каждые пять минут.
+    */
+
+    setInterval(
+        loadGenshinStats,
+        5 * 60 * 1000
+    );
+
+
+    /*
+    На случай, если страница Notion
+    остается открытой через полночь:
+    пересчитываем дни раз в минуту.
+    */
+
+    setInterval(
+        updateDays,
+        60 * 1000
+    );
 
 </script>
 
