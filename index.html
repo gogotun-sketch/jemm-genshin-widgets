@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Тейват в цифрах</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+
+    background: #191919 !important;
+
+    font-family: "Manrope", sans-serif;
+}
+
+.widgets {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 14px;
+
+    background: #191919;
+}
+
+
+        /* ----------------------------- */
+        /* КАРТОЧКИ */
+        /* ----------------------------- */
+
+        .card {
+            position: relative;
+
+            min-width: 0;
+            height: 250px;
+
+            overflow: hidden;
+
+            border-radius: 16px;
+
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+
+            color: #fffaf2;
+
+            box-shadow:
+                0 8px 24px rgba(0, 0, 0, 0.18);
+        }
+
+
+        /* затемнение снизу */
+
+        .card::before {
+            content: "";
+
+            position: absolute;
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    to top,
+                    rgba(8, 10, 15, 0.78) 0%,
+                    rgba(8, 10, 15, 0.46) 34%,
+                    rgba(8, 10, 15, 0.16) 65%,
+                    rgba(8, 10, 15, 0.02) 100%
+                );
+
+            z-index: 1;
+        }
+
+
+        /* легкое теплое свечение */
+
+        .card::after {
+            content: "";
+
+            position: absolute;
+            inset: 0;
+
+            background:
+                radial-gradient(
+                    circle at 50% 80%,
+                    rgba(255, 224, 173, 0.10),
+                    transparent 42%
+                );
+
+            z-index: 1;
+
+            pointer-events: none;
+        }
+
+
+        /* ----------------------------- */
+        /* КАРТИНКИ */
+        /* ----------------------------- */
+
+        .card-days {
+            background-image: url("./images/days.png");
+        }
+
+        .card-achievements {
+            background-image: url("./images/achievements.png");
+        }
+
+        .card-characters {
+            background-image: url("./images/characters.png");
+        }
+
+
+        /* ----------------------------- */
+        /* ТЕКСТ */
+        /* ----------------------------- */
+
+        .content {
+            position: absolute;
+
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            z-index: 2;
+
+            padding: 18px 19px 17px;
+        }
+
+
+        /* большая цифра */
+
+        .number {
+            font-family: "Cormorant Garamond", serif;
+
+            font-size: clamp(56px, 6vw, 78px);
+
+            line-height: 0.86;
+
+            font-weight: 700;
+
+            letter-spacing: -0.04em;
+
+            color: #fffaf2;
+
+            text-shadow:
+                0 3px 10px rgba(0, 0, 0, 0.62),
+                0 7px 24px rgba(0, 0, 0, 0.32);
+        }
+
+
+        /* из 1844 / из 129 / дней */
+
+        .meta {
+            margin-top: 6px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            letter-spacing: 0.02em;
+
+            color: rgba(255, 247, 235, 0.76);
+
+            text-shadow:
+                0 2px 7px rgba(0, 0, 0, 0.65);
+        }
+
+
+        /* фраза */
+
+        .phrase {
+            margin-top: 13px;
+
+            font-family: "Cormorant Garamond", serif;
+
+            font-size: clamp(17px, 1.5vw, 21px);
+
+            line-height: 1.13;
+
+            font-style: italic;
+            font-weight: 500;
+
+            color: rgba(255, 247, 235, 0.96);
+
+            text-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.72),
+                0 5px 18px rgba(0, 0, 0, 0.38);
+        }
+
+
+        /* ----------------------------- */
+        /* УЗКИЕ ЭКРАНЫ */
+        /* ----------------------------- */
+
+        @media (max-width: 850px) {
+
+            .widgets {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                height: 280px;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<div class="widgets">
+
+
+    <!-- ДНИ -->
+
+    <article class="card card-days">
+
+        <div class="content">
+
+            <div
+                class="number"
+                id="days-number"
+            >
+                2192
+            </div>
+
+            <div class="meta">
+                дней в Тейвате
+            </div>
+
+            <div class="phrase">
+                Когда-то это был просто пролог.
+            </div>
+
+        </div>
+
+    </article>
+
+
+
+    <!-- ДОСТИЖЕНИЯ -->
+
+    <article class="card card-achievements">
+
+        <div class="content">
+
+            <div
+                class="number"
+                id="achievements-number"
+            >
+                1457
+            </div>
+
+            <div
+                class="meta"
+                id="achievements-meta"
+            >
+                из 1844
+            </div>
+
+            <div class="phrase">
+                Еще чуть-чуть до полного списка. Ну, относительно.
+            </div>
+
+        </div>
+
+    </article>
+
+
+
+    <!-- ПЕРСОНАЖИ -->
+
+    <article class="card card-characters">
+
+        <div class="content">
+
+            <div
+                class="number"
+                id="characters-number"
+            >
+                102
+            </div>
+
+            <div
+                class="meta"
+                id="characters-meta"
+            >
+                из 129
+            </div>
+
+            <div class="phrase">
+                Коллекция продолжает расти вопреки здравому смыслу.
+            </div>
+
+        </div>
+
+    </article>
+
+
+</div>
+
+
+<script>
+
+    /* -------------------------------- */
+    /* ПОКА СТАТИЧЕСКИЕ СЧЕТЧИКИ */
+    /* -------------------------------- */
+
+    const stats = {
+
+        achievements: {
+            current: 1457,
+            total: 1844
+        },
+
+        characters: {
+            current: 102,
+            total: 129
+        }
+
+    };
+
+
+    /* -------------------------------- */
+    /* ДНИ В ТЕЙВАТЕ */
+    /* -------------------------------- */
+
+    function calculateTeyvatDays() {
+
+        const start =
+            new Date(2020, 8, 29);
+
+        const today =
+            new Date();
+
+
+        start.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        today.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        const difference =
+            today - start;
+
+
+        return (
+            Math.floor(
+                difference / 86400000
+            ) + 1
+        );
+
+    }
+
+
+    document.getElementById(
+        "days-number"
+    ).textContent =
+        calculateTeyvatDays();
+
+
+    /* -------------------------------- */
+    /* ДОСТИЖЕНИЯ */
+    /* -------------------------------- */
+
+    document.getElementById(
+        "achievements-number"
+    ).textContent =
+        stats.achievements.current;
+
+
+    document.getElementById(
+        "achievements-meta"
+    ).textContent =
+        "из " +
+        stats.achievements.total;
+
+
+    /* -------------------------------- */
+    /* ПЕРСОНАЖИ */
+    /* -------------------------------- */
+
+    document.getElementById(
+        "characters-number"
+    ).textContent =
+        stats.characters.current;
+
+
+    document.getElementById(
+        "characters-meta"
+    ).textContent =
+        "из " +
+        stats.characters.total;
+
+</script>
+
+</body>
+</html>
