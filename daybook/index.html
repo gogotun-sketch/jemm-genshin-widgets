@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Daybook</title>
+
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Manrope:wght@400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+
+        width: 100%;
+        height: 100%;
+
+        overflow: hidden;
+
+        background:
+            #191919;
+
+        font-family:
+            "Manrope",
+            sans-serif;
+    }
+
+
+    .widget {
+
+        position: relative;
+
+        width: 100%;
+        height: 100vh;
+
+        min-height: 330px;
+
+        overflow: hidden;
+
+        border-radius: 16px;
+
+        background-image:
+            url("./images/daybook.png");
+
+        background-size:
+            cover;
+
+        background-position:
+            center center;
+
+        color:
+            #fff8ec;
+
+        box-shadow:
+            0 8px 28px
+            rgba(0, 0, 0, 0.18);
+    }
+
+
+    /*
+    Центральная вуаль.
+    У картинки специально
+    свободное место по центру.
+    */
+
+    .widget::before {
+
+        content: "";
+
+        position: absolute;
+        inset: 0;
+
+        background:
+            radial-gradient(
+                ellipse at center,
+
+                rgba(
+                    15,
+                    9,
+                    6,
+                    0.58
+                )
+                    0%,
+
+                rgba(
+                    15,
+                    9,
+                    6,
+                    0.36
+                )
+                    32%,
+
+                rgba(
+                    15,
+                    9,
+                    6,
+                    0.08
+                )
+                    66%,
+
+                transparent
+                    100%
+            );
+
+        z-index: 1;
+    }
+
+
+    /*
+    Небольшое затемнение снизу
+    для годовой строки.
+    */
+
+    .widget::after {
+
+        content: "";
+
+        position: absolute;
+        inset: 0;
+
+        background:
+            linear-gradient(
+                to top,
+
+                rgba(
+                    11,
+                    7,
+                    5,
+                    0.48
+                )
+                    0%,
+
+                transparent
+                    34%
+            );
+
+        z-index: 1;
+
+        pointer-events:
+            none;
+    }
+
+
+    .content {
+
+        position: relative;
+
+        z-index: 2;
+
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+
+        flex-direction:
+            column;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        text-align:
+            center;
+
+        padding:
+            34px 28px 62px;
+    }
+
+
+    /* ------------------------- */
+    /* ОСНОВНАЯ ЦИФРА */
+    /* ------------------------- */
+
+    .number {
+
+        font-family:
+            "Cormorant Garamond",
+            serif;
+
+        font-size:
+            clamp(
+                86px,
+                14vw,
+                132px
+            );
+
+        line-height:
+            0.78;
+
+        font-weight:
+            700;
+
+        letter-spacing:
+            -0.045em;
+
+        color:
+            #fff8ea;
+
+        text-shadow:
+
+            0 3px 12px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.72
+                ),
+
+            0 9px 30px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.34
+                );
+    }
+
+
+    /* ------------------------- */
+    /* СДЕЛАНО В СЕНТЯБРЕ */
+    /* ------------------------- */
+
+    .month-label {
+
+        margin-top:
+            22px;
+
+        font-size:
+            clamp(
+                12px,
+                1.5vw,
+                16px
+            );
+
+        font-weight:
+            600;
+
+        letter-spacing:
+            0.055em;
+
+        color:
+            rgba(
+                255,
+                239,
+                218,
+                0.84
+            );
+
+        text-shadow:
+            0 2px 8px
+            rgba(
+                0,
+                0,
+                0,
+                0.70
+            );
+    }
+
+
+    .divider {
+
+        width:
+            62px;
+
+        height:
+            1px;
+
+        margin:
+            21px auto 17px;
+
+        background:
+            linear-gradient(
+                90deg,
+
+                transparent,
+
+                rgba(
+                    230,
+                    176,
+                    106,
+                    0.95
+                ),
+
+                transparent
+            );
+    }
+
+
+    /* ------------------------- */
+    /* РАНДОМНАЯ ФРАЗА */
+    /* ------------------------- */
+
+    .phrase {
+
+        max-width:
+            520px;
+
+        font-family:
+            "Cormorant Garamond",
+            serif;
+
+        font-size:
+            clamp(
+                20px,
+                2.4vw,
+                29px
+            );
+
+        line-height:
+            1.12;
+
+        font-style:
+            italic;
+
+        font-weight:
+            500;
+
+        color:
+            rgba(
+                255,
+                244,
+                227,
+                0.96
+            );
+
+        text-shadow:
+
+            0 2px 9px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.76
+                ),
+
+            0 6px 21px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.38
+                );
+    }
+
+
+    /* ------------------------- */
+    /* ГОД */
+    /* ------------------------- */
+
+    .year-total {
+
+        position:
+            absolute;
+
+        z-index:
+            3;
+
+        left:
+            0;
+
+        right:
+            0;
+
+        bottom:
+            19px;
+
+        text-align:
+            center;
+
+        font-size:
+            clamp(
+                10px,
+                1.25vw,
+                13px
+            );
+
+        font-weight:
+            500;
+
+        letter-spacing:
+            0.045em;
+
+        color:
+            rgba(
+                255,
+                232,
+                204,
+                0.66
+            );
+
+        text-shadow:
+            0 2px 7px
+            rgba(
+                0,
+                0,
+                0,
+                0.72
+            );
+    }
+
+
+    @media (
+        max-height: 370px
+    ) {
+
+        .content {
+            padding:
+                24px 24px 52px;
+        }
+
+
+        .number {
+            font-size:
+                82px;
+        }
+
+
+        .month-label {
+            margin-top:
+                15px;
+        }
+
+
+        .divider {
+            margin:
+                15px auto 12px;
+        }
+
+
+        .phrase {
+            font-size:
+                20px;
+        }
+
+    }
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="widget">
+
+
+    <div class="content">
+
+
+        <div
+            class="number"
+            id="month-number"
+        >
+            —
+        </div>
+
+
+        <div
+            class="month-label"
+            id="month-label"
+        >
+            сделано в этом месяце
+        </div>
+
+
+        <div class="divider"></div>
+
+
+        <div
+            class="phrase"
+            id="phrase"
+        >
+            Сделано больше, чем кажется.
+        </div>
+
+
+    </div>
+
+
+    <div
+        class="year-total"
+        id="year-total"
+    >
+        —
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+    /* ------------------------- */
+    /* МЕСЯЦЫ */
+    /* ------------------------- */
+
+    const monthNames = [
+
+        "январе",
+        "феврале",
+        "марте",
+        "апреле",
+        "мае",
+        "июне",
+        "июле",
+        "августе",
+        "сентябре",
+        "октябре",
+        "ноябре",
+        "декабре"
+
+    ];
+
+
+
+    /* ------------------------- */
+    /* ФРАЗЫ */
+    /* ------------------------- */
+
+    const phrases = [
+
+        "Сделано больше, чем кажется.",
+
+        "Месяц вполне себе движется.",
+
+        "Вот столько всего уже можно больше не помнить.",
+
+        "Список стал короче. Это считается.",
+
+        "Еще несколько пунктов перестали быть проблемой.",
+
+        "Потихоньку превращаем «надо» в «сделано».",
+
+        "Все это уже можно вычеркнуть.",
+
+        "Неплохая коллекция закрытых хвостов.",
+
+        "Каждая галочка немного освобождает голову.",
+
+        "Список дел понемногу сдается.",
+
+        "Еще немного порядка в этом месяце.",
+
+        "Не все сразу. Но уже довольно много.",
+
+        "Вот сколько всего уже осталось позади.",
+
+        "Пункт за пунктом — и вот уже результат.",
+
+        "Некоторые вещи наконец перестали ждать."
+
+    ];
+
+
+
+    /* ------------------------- */
+    /* СКЛОНЕНИЕ ДЕЛО */
+    /* ------------------------- */
+
+    function taskWord(number) {
+
+        const n =
+            Math.abs(number) % 100;
+
+
+        const n1 =
+            n % 10;
+
+
+        if (
+            n > 10 &&
+            n < 20
+        ) {
+
+            return "дел";
+
+        }
+
+
+        if (n1 === 1) {
+
+            return "дело";
+
+        }
+
+
+        if (
+            n1 >= 2 &&
+            n1 <= 4
+        ) {
+
+            return "дела";
+
+        }
+
+
+        return "дел";
+
+    }
+
+
+
+    /* ------------------------- */
+    /* РАНДОМНАЯ ФРАЗА */
+    /* ------------------------- */
+
+    function choosePhrase() {
+
+        return phrases[
+            Math.floor(
+                Math.random() *
+                phrases.length
+            )
+        ];
+
+    }
+
+
+
+    function updatePhrase() {
+
+        document.getElementById(
+            "phrase"
+        ).textContent =
+            choosePhrase();
+
+    }
+
+
+
+    /* ------------------------- */
+    /* ДАННЫЕ */
+    /* ------------------------- */
+
+    async function loadStats() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/.netlify/functions/daybook-stats"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `Stats request failed: ${response.status}`
+                );
+
+            }
+
+
+            const stats =
+                await response.json();
+
+
+            /* ЦИФРА */
+
+            document.getElementById(
+                "month-number"
+            ).textContent =
+                stats.monthDone;
+
+
+
+            /* МЕСЯЦ */
+
+            const monthName =
+                monthNames[
+                    stats.month - 1
+                ];
+
+
+            document.getElementById(
+                "month-label"
+            ).textContent =
+                "сделано в " +
+                monthName;
+
+
+
+            /* ГОД */
+
+            document.getElementById(
+                "year-total"
+            ).textContent =
+                stats.year +
+                " — сделано " +
+                stats.yearDone +
+                " " +
+                taskWord(
+                    stats.yearDone
+                );
+
+
+            console.log(
+                "Daybook updated:",
+                stats
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Не удалось обновить Daybook:",
+                error
+            );
+
+        }
+
+    }
+
+
+
+    /* ------------------------- */
+    /* ЗАПУСК */
+    /* ------------------------- */
+
+
+    /*
+    Фраза сразу при открытии.
+    */
+
+    updatePhrase();
+
+
+    /*
+    Данные сразу при открытии.
+    */
+
+    loadStats();
+
+
+    /*
+    Цифры проверяем
+    каждые 5 минут.
+    */
+
+    setInterval(
+        loadStats,
+        5 * 60 * 1000
+    );
+
+
+    /*
+    Фразу меняем
+    раз в час.
+    */
+
+    setInterval(
+        updatePhrase,
+        60 * 60 * 1000
+    );
+
+
+</script>
+
+
+</body>
+
+</html>
