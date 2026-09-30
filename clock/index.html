@@ -2,163 +2,188 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Jemm Clock</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <!-- Шрифты для времени и даты -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Clock</title>
 
-<link
-    href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap"
-    rel="stylesheet"
->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Manrope:wght@400;500&display=swap"
-    rel="stylesheet"
->
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Manrope:wght@400;500;600&display=swap"
+        rel="stylesheet"
+    >
 
     <style>
 
-        /* ----------------------------- */
-        /* БАЗОВЫЕ НАСТРОЙКИ */
-        /* ----------------------------- */
+        @font-face {
+            font-family: "Great Vibes";
+
+            src:
+                url("./fonts/GreatVibes-Regular.ttf")
+                format("truetype");
+
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
 
         * {
             box-sizing: border-box;
         }
 
+
         html,
         body {
             margin: 0;
+            padding: 0;
+
             width: 100%;
             height: 100%;
+
             overflow: hidden;
+
+            background: #191919;
         }
+
 
         body {
-            background: #171917;
-
-            font-family: "Manrope", sans-serif;
-
-            color: #fff7ed;
+            font-family:
+                "Manrope",
+                sans-serif;
         }
 
-
-        /* ----------------------------- */
-        /* ВИДЖЕТ */
-        /* ----------------------------- */
 
         .widget {
             position: relative;
 
-            width: 100%;
+            width: 100vw;
             height: 100vh;
 
-            min-height: 220px;
+            min-height: 320px;
 
             overflow: hidden;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
             background-size: cover;
+            background-position: center;
             background-repeat: no-repeat;
 
-            transition:
-                background-image 1.2s ease,
-                background-position 1.2s ease;
+            color: #fff8ef;
         }
 
-
-        /* ----------------------------- */
-        /* ЗАТЕМНЕНИЕ */
-        /* ----------------------------- */
 
         .overlay {
             position: absolute;
             inset: 0;
 
-            transition: background 1.2s ease;
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(24, 13, 7, 0.15) 0%,
+                    rgba(24, 13, 7, 0.28) 50%,
+                    rgba(24, 13, 7, 0.44) 100%
+                );
+
+            z-index: 1;
         }
 
-
-        /* ----------------------------- */
-        /* МЯГКОЕ СВЕЧЕНИЕ */
-        /* ----------------------------- */
 
         .glow {
             position: absolute;
-            inset: 0;
 
-            pointer-events: none;
+            width: 460px;
+            height: 460px;
+
+            left: 50%;
+            top: 50%;
+
+            transform:
+                translate(-50%, -50%);
+
+            border-radius: 50%;
 
             background:
                 radial-gradient(
-                    circle at 50% 42%,
-                    rgba(255, 215, 160, 0.11),
-                    transparent 43%
+                    circle,
+                    rgba(255, 224, 167, 0.11) 0%,
+                    rgba(255, 205, 123, 0.05) 42%,
+                    transparent 72%
                 );
+
+            filter: blur(18px);
+
+            z-index: 2;
+
+            pointer-events: none;
         }
 
-
-        /* ----------------------------- */
-        /* СОДЕРЖИМОЕ */
-        /* ----------------------------- */
 
         .content {
             position: relative;
-            z-index: 2;
 
-            width: min(92%, 650px);
+            z-index: 3;
+
+            width: 100%;
+            height: 100%;
+
+            padding:
+                28px
+                32px;
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
 
             text-align: center;
-
-            padding: 24px 26px;
-
-            text-shadow:
-                0 2px 8px rgba(0, 0, 0, 0.55),
-                0 4px 18px rgba(0, 0, 0, 0.35);
         }
 
 
-        /* ----------------------------- */
-        /* ПРИВЕТСТВИЕ */
-        /* ----------------------------- */
-
         .greeting {
-    font-family: "French Kiss", cursive;
+            margin-bottom: 10px;
 
-    font-size: clamp(34px, 5vw, 48px);
-    line-height: 1.08;
+            font-family:
+                "Great Vibes",
+                cursive;
 
-    color: #fff6ee;
+            font-size:
+                clamp(
+                    38px,
+                    7vw,
+                    62px
+                );
 
-    margin-bottom: 10px;
+            line-height: 1;
 
-    text-shadow:
-        0 2px 8px rgba(0, 0, 0, 0.58),
-        0 4px 18px rgba(0, 0, 0, 0.35),
-        0 0 12px rgba(90, 45, 20, 0.22);
+            font-weight: 400;
 
-    -webkit-text-stroke: 0.35px rgba(120, 70, 30, 0.35);
+            color: #fff8ef;
 
-    letter-spacing: 0.01em;
-}
+            text-shadow:
+                0 3px 14px
+                rgba(0, 0, 0, 0.58);
+        }
 
-
-        /* ----------------------------- */
-        /* ВРЕМЯ */
-        /* ----------------------------- */
 
         .time {
-            font-family: "Cormorant Garamond", serif;
+            font-family:
+                "Cormorant Garamond",
+                serif;
 
-            font-size: clamp(64px, 12vw, 106px);
+            font-size:
+                clamp(
+                    58px,
+                    10vw,
+                    86px
+                );
 
-            line-height: 0.88;
+            line-height: 0.95;
 
             font-weight: 600;
 
@@ -167,206 +192,112 @@
             color: #fffaf2;
 
             text-shadow:
-                0 2px 10px rgba(0, 0, 0, 0.48),
-                0 6px 24px rgba(0, 0, 0, 0.25);
+                0 4px 18px
+                rgba(0, 0, 0, 0.55);
         }
 
 
-        /* ----------------------------- */
-        /* ДАТА */
-        /* ----------------------------- */
-
         .date {
-            margin-top: 12px;
+            margin-top: 9px;
 
-            font-size: clamp(12px, 2vw, 15px);
+            font-size:
+                clamp(
+                    13px,
+                    2vw,
+                    17px
+                );
 
             font-weight: 500;
 
-            letter-spacing: 0.035em;
+            color:
+                rgba(
+                    255,
+                    244,
+                    229,
+                    0.93
+                );
 
-            color: rgba(255, 247, 237, 0.90);
+            text-shadow:
+                0 2px 8px
+                rgba(0, 0, 0, 0.58);
         }
 
 
-        /* ----------------------------- */
-        /* РАЗДЕЛИТЕЛЬ */
-        /* ----------------------------- */
-
         .divider {
-            width: 56px;
+            width: 50px;
             height: 1px;
 
-            margin: 16px auto;
+            margin:
+                15px
+                0
+                12px;
 
             background:
                 linear-gradient(
                     90deg,
                     transparent,
-                    rgba(255, 224, 176, 0.95),
+                    rgba(255, 221, 173, 0.85),
                     transparent
                 );
         }
 
 
-        /* ----------------------------- */
-        /* ФРАЗА */
-        /* ----------------------------- */
-
         .phrase {
-    font-family: "Cormorant Garamond", serif;
+            max-width: 580px;
 
-    font-size: clamp(24px, 3.6vw, 34px);
+            font-family:
+                "Great Vibes",
+                cursive;
 
-    font-style: italic;
-    font-weight: 500;
-
-    line-height: 1.12;
-
-    color: #fff5e8;
-
-    max-width: 520px;
-    width: 90%;
-
-    margin: 0 auto;
-
-    text-shadow:
-        0 2px 8px rgba(0, 0, 0, 0.72),
-        0 5px 18px rgba(0, 0, 0, 0.38);
-
-    letter-spacing: 0.01em;
-}
-
-
-        /* ----------------------------- */
-        /* УТРО */
-        /* ----------------------------- */
-
-        .widget.morning {
-            background-image: url("./images/morning.jpg");
-            background-position: 50% 40%;
-        }
-
-        .widget.morning .overlay {
-            background:
-                linear-gradient(
-                    180deg,
-                    rgba(56, 34, 22, 0.14) 0%,
-                    rgba(55, 34, 22, 0.20) 42%,
-                    rgba(27, 18, 14, 0.46) 100%
+            font-size:
+                clamp(
+                    28px,
+                    5vw,
+                    42px
                 );
-        }
 
+            line-height: 1.18;
 
-        /* ----------------------------- */
-        /* ДЕНЬ */
-        /* ----------------------------- */
+            font-weight: 400;
 
-        .widget.day {
-            background-image: url("./images/day.jpg");
-            background-position: 50% 42%;
-        }
-
-        .widget.day .overlay {
-            background:
-                linear-gradient(
-                    180deg,
-                    rgba(50, 31, 19, 0.10) 0%,
-                    rgba(48, 31, 20, 0.18) 42%,
-                    rgba(26, 19, 15, 0.44) 100%
+            color:
+                rgba(
+                    255,
+                    248,
+                    238,
+                    0.96
                 );
+
+            text-shadow:
+                0 3px 12px
+                rgba(0, 0, 0, 0.62);
         }
 
 
-        /* ----------------------------- */
-        /* ВЕЧЕР */
-        /* ----------------------------- */
+        @media (max-width: 520px) {
 
-        .widget.evening {
-            background-image: url("./images/evening.jpg");
-            background-position: 50% 53%;
-        }
+            .content {
+                padding:
+                    22px
+                    24px;
+            }
 
-        .widget.evening .overlay {
-            background:
-                linear-gradient(
-                    180deg,
-                    rgba(47, 27, 14, 0.15) 0%,
-                    rgba(44, 25, 16, 0.27) 44%,
-                    rgba(27, 18, 14, 0.57) 100%
-                );
-        }
-
-
-        /* ----------------------------- */
-        /* НОЧЬ */
-        /* ----------------------------- */
-
-        .widget.night {
-            background-image: url("./images/night.jpg");
-            background-position: 50% 54%;
-        }
-
-        .widget.night .overlay {
-            background:
-                linear-gradient(
-                    180deg,
-                    rgba(8, 18, 18, 0.18) 0%,
-                    rgba(8, 18, 17, 0.35) 45%,
-                    rgba(5, 12, 11, 0.67) 100%
-                );
-        }
-
-
-        /* ----------------------------- */
-        /* МАЛЕНЬКИЙ EMBED */
-        /* ----------------------------- */
-
-       @media (max-height: 280px) {
-
-    .phrase {
-        font-size: 24px;
-        line-height: 1.12;
-        max-width: 420px;
-    }
-
-}
-
-
-        @media (max-height: 280px) {
 
             .greeting {
-                font-size: 29px;
-                margin-bottom: 4px;
-            }
-
-            .time {
-                font-size: 68px;
-            }
-
-            .date {
-    margin-top: 10px;
-
-    font-size: clamp(12px, 2vw, 14px);
-
-    font-weight: 500;
-
-    letter-spacing: 0.045em;
-
-    color:
-        rgba(255, 247, 237, 0.82);
-
-    text-shadow:
-        0 2px 6px rgba(0, 0, 0, 0.45);
-}
-
-            .divider {
-                margin-top: 9px;
                 margin-bottom: 8px;
             }
 
+
+            .divider {
+                margin:
+                    13px
+                    0
+                    10px;
+            }
+
+
             .phrase {
-                font-size: 27px;
+                max-width: 92%;
             }
 
         }
@@ -377,289 +308,248 @@
 
 <body>
 
-    <div class="widget" id="widget">
+<div
+    class="widget"
+    id="widget"
+>
 
-        <div class="overlay"></div>
+    <div class="overlay"></div>
 
-        <div class="glow"></div>
+    <div class="glow"></div>
 
-        <div class="content">
 
-            <div class="greeting" id="greeting">
-                Добрый вечер, Джем
-            </div>
+    <div class="content">
 
-            <div class="time" id="time">
-                20:43
-            </div>
+        <div
+            class="greeting"
+            id="greeting"
+        ></div>
 
-            <div class="date" id="date">
-                вторник, 29 сентября
-            </div>
 
-            <div class="divider"></div>
+        <div
+            class="time"
+            id="time"
+        ></div>
 
-            <div class="phrase" id="phrase">
-                Можно оставить недоделанное недоделанным.
-            </div>
 
-        </div>
+        <div
+            class="date"
+            id="date"
+        ></div>
+
+
+        <div class="divider"></div>
+
+
+        <div
+            class="phrase"
+            id="phrase"
+        ></div>
 
     </div>
+
+</div>
 
 
 <script>
 
-    /* ------------------------------------------ */
-    /* ФРАЗЫ */
-    /* ------------------------------------------ */
-
-    const phrases = {
-
-        morning: [
-
-            "Доброе утро. Никакой спешки.",
-
-            "Сегодня можно сделать одну хорошую штуку.",
-
-            "Кофе сначала. Великие свершения потом.",
-
-            "Новый день уже считается достижением.",
-
-            "Не обязательно начинать день героически.",
-
-            "Пусть утро сначала просто случится.",
-
-            "У тебя впереди целый день. Не надо тратить его весь сразу.",
-
-            "Мир никуда не делся за ночь.",
-
-            "Сегодня разрешается начать медленно.",
-
-            "Сначала проснуться. Остальное разберется.",
-
-            "Можно начать с самого приятного пункта.",
-
-            "Утро ничего от тебя пока не требует.",
-
-            "Планы подождут еще пять минут.",
-
-            "Для начала достаточно просто открыть глаза.",
-
-            "Сегодня не обязательно быть продуктивной с первой минуты.",
-
-            "Пусть день начнется с чего-нибудь приятного."
-
-        ],
-
-
-        day: [
-
-            "Что там у нас сегодня по великим свершениям?",
-
-            "Маленький прогресс тоже прогресс.",
-
-            "Можно заниматься важным. Можно заниматься интересным.",
-
-            "Главное - чтобы было в удовольствие.",
-
-            "Если дело сделано на 30%, оно уже не на нуле.",
-
-            "Можно сменить задачу, если эта надоела.",
-
-            "Один закрытый пункт приятнее десяти придуманных.",
-
-            "Не все полезное должно быть мучительным.",
-
-            "Пять минут тоже считаются.",
-
-            "У дня еще полно времени.",
-
-            "Иногда лучший план - делать то, что сейчас интересно.",
-
-            "Это вполне подходящий момент сделать что-нибудь классное.",
-
-            "Необязательно делать все сразу.",
-
-            "Можно выбрать самое интересное и начать с него.",
-
-            "Даже маленькая законченная штука сегодня считается.",
-
-            "Если хочется отвлечься - возможно, пора отвлечься."
-
-        ],
-
-
-        evening: [
-
-            "Ну что, сколько добра было сделано?",
-
-            "День почти закончился. Можно уже никуда не торопиться.",
-
-            "Даже если сделано немного - оно все равно сделано.",
-
-            "Вечер официально разрешает расслабиться.",
-
-            "Список дел прекрасно переживет до завтра.",
-
-            "Лучшие планы на вечер могут быть вообще без планов.",
-
-            "Все важное не обязано случиться сегодня.",
-
-            "Можно закрыть вкладки. Хотя бы некоторые.",
-
-            "Сегодняшнего уже достаточно.",
-
-            "Пора включать маленькие лампы.",
-
-            "Все, что не успело случиться сегодня, получит еще один шанс завтра.",
-
-            "У вечера одна работа: быть приятным.",
-
-            "Можно оставить недоделанное недоделанным.",
-
-            "Самое время перейти в режим маленьких лампочек.",
-
-            "Планы на завтра прекрасно можно придумать завтра.",
-
-            "На сегодня вполне достаточно приключений."
-
-        ],
-
-
-        night: [
-
-            "Джем. Уже ночь. Я просто напоминаю.",
-
-            "Ночные идеи подозрительно убедительны.",
-
-            "Можно сохранить мысль и вернуться к ней завтра.",
-
-            "Все остальное вполне может подождать.",
-
-            "После полуночи любая идея почему-то кажется гениальной.",
-
-            "Если очень хочется начать новый проект - запиши название.",
-
-            "Ночь отлично подходит для ничего.",
-
-            "Даже Notion можно закрыть. Теоретически.",
-
-            "Завтра эта мысль все еще будет здесь.",
-
-            "Свет оставить можно. Работать необязательно.",
-
-            "Еще один маленький скролл, конечно. Последний. Наверное.",
-
-            "Мир продолжит работать без нашего непосредственного участия.",
-
-            "На сегодня все. Остальное заберет завтрашняя Джем.",
-
-            "Нет, новый проект в два часа ночи не срочный.",
-
-            "Можно просто посидеть в тишине.",
-
-            "Все хорошие идеи переживут сон."
-
-        ]
+    const periods = {
+
+        morning: {
+            greeting: "Доброе утро, Джем",
+
+            image:
+                "./images/morning.jpg",
+
+            phrases: [
+                "Пусть утро начинается без лишней суеты.",
+                "Сначала кофе. Остальное разберется потом.",
+                "Новый день пока еще ничего от тебя не требует.",
+                "Можно начинать медленно.",
+                "У утра есть право быть тихим.",
+                "Сегодня тоже можно делать все по одному.",
+                "Пока мир только просыпается.",
+                "Хороший момент для первого маленького дела.",
+                "Начнем без героизма.",
+                "Утро создано для планов, которые еще не успели надоесть.",
+                "День только открывает глаза.",
+                "Немного света, немного тишины, и можно начинать.",
+                "Никуда не спешим. Пока.",
+                "Самое время собрать мысли в одну кучку.",
+                "Пусть первый пункт будет простым.",
+                "Еще один день начинается с чистого листа."
+            ]
+        },
+
+
+        day: {
+            greeting: "Добрый день, Джем",
+
+            image:
+                "./images/day.jpg",
+
+            phrases: [
+                "День уже идет. Можно идти вместе с ним.",
+                "Не обязательно успевать все сразу.",
+                "Одно дело за другим вполне считается системой.",
+                "Планы существуют, чтобы постепенно становиться галочками.",
+                "Нормальный темп тоже темп.",
+                "Самое время сделать что-нибудь полезное. Или приятное.",
+                "День в самом разгаре, а значит еще полно вариантов.",
+                "Можно продолжать с того места, где остановилась.",
+                "Некоторые дела сегодня вполне могут закончиться.",
+                "Список задач сам себя не закроет. К сожалению.",
+                "Еще немного движения вперед.",
+                "Не обязательно делать много, чтобы день считался.",
+                "Сейчас вполне подходящее время для одного хорошего решения.",
+                "Пусть сегодня будет хотя бы одна приятная галочка.",
+                "День пока никуда не делся.",
+                "Маленькие дела тоже освобождают место в голове."
+            ]
+        },
+
+
+        evening: {
+            greeting: "Добрый вечер, Джем",
+
+            image:
+                "./images/evening.jpg",
+
+            phrases: [
+                "Самое время перейти в режим маленьких лампочек.",
+                "Вечер официально разрешает делать все помедленнее.",
+                "Пора включать уют.",
+                "День постепенно можно отпускать.",
+                "Некоторые дела вполне способны подождать до завтра.",
+                "Вечеру положены теплый свет и отсутствие спешки.",
+                "Самое время устроиться поудобнее.",
+                "Сегодня уже сделано достаточно, чтобы немного выдохнуть.",
+                "Пусть дальше будет только приятная часть дня.",
+                "Вечер создан для книг, игр и маленьких ритуалов.",
+                "Еще немного света перед ночью.",
+                "Можно ненадолго перестать быть продуктивной.",
+                "Планы на вечер имеют право быть очень простыми.",
+                "День почти собран и убран на полку.",
+                "Пусть вокруг станет немного тише.",
+                "Время теплого света и своих дел."
+            ]
+        },
+
+
+        night: {
+            greeting: "Доброй ночи, Джем",
+
+            image:
+                "./images/night.jpg",
+
+            phrases: [
+                "Мир стал тише. Можно тоже.",
+                "Все остальное вполне способно подождать до утра.",
+                "Ночь хорошо подходит для режима не трогайте меня.",
+                "Сегодня уже можно ничего никому не доказывать.",
+                "Пора постепенно выключать день.",
+                "Самое время оставить задачи завтрашней версии себя.",
+                "Ночью список дел выглядит значительно менее убедительно.",
+                "Еще немного тишины перед сном.",
+                "День закончился. Это уже результат.",
+                "Некоторые мысли лучше оставить до утра.",
+                "Можно наконец перестать куда-то торопиться.",
+                "Пусть ночь будет спокойной.",
+                "Время закрывать лишние вкладки. Хотя бы мысленно.",
+                "На сегодня мир вполне может обойтись без твоего участия.",
+                "Пора складывать этот день.",
+                "Все незаконченные дела переживут ночь."
+            ]
+        }
 
     };
 
 
-    /* ------------------------------------------ */
-    /* ПРИВЕТСТВИЯ */
-    /* ------------------------------------------ */
-
-    const greetings = {
-
-        morning: "Доброе утро, Джем",
-
-        day: "Добрый день, Джем",
-
-        evening: "Добрый вечер, Джем",
-
-        night: "Доброй ночи, Джем"
-
-    };
+    let currentPeriodKey =
+        null;
 
 
-    /* ------------------------------------------ */
-    /* ВРЕМЯ СУТОК */
-    /* ------------------------------------------ */
+    let currentPhrase =
+        "";
 
-    function getPeriod(hour) {
 
-        if (hour >= 5 && hour < 11) {
+    function getPeriodKey(hour) {
+
+        if (
+            hour >= 5 &&
+            hour < 11
+        ) {
             return "morning";
         }
 
-        if (hour >= 11 && hour < 17) {
+
+        if (
+            hour >= 11 &&
+            hour < 17
+        ) {
             return "day";
         }
 
-        if (hour >= 17 && hour < 22) {
+
+        if (
+            hour >= 17 &&
+            hour < 22
+        ) {
             return "evening";
         }
+
 
         return "night";
 
     }
 
 
-    /* ------------------------------------------ */
-    /* СЛУЧАЙНАЯ ФРАЗА */
-    /* ------------------------------------------ */
+    function choosePhrase(list) {
 
-    function choosePhrase(period) {
+        const index =
+            Math.floor(
+                Math.random() *
+                list.length
+            );
 
-        const list = phrases[period];
 
-        const randomIndex =
-            Math.floor(Math.random() * list.length);
-
-        return list[randomIndex];
+        return list[index];
 
     }
 
 
-    /* ------------------------------------------ */
-    /* СОСТОЯНИЕ */
-    /* ------------------------------------------ */
-
-    let currentPeriod = "";
-
-    let currentPhraseSlot = "";
-
-
-    /* ------------------------------------------ */
-    /* ОБНОВЛЕНИЕ */
-    /* ------------------------------------------ */
-
     function updateClock() {
 
-        const now = new Date();
-
-        const hour = now.getHours();
-
-        const period = getPeriod(hour);
+        const now =
+            new Date();
 
 
-        /* Время */
-
-        document.getElementById("time").textContent =
-            now.toLocaleTimeString(
-                "ru-RU",
-                {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                }
+        const hours =
+            String(
+                now.getHours()
+            ).padStart(
+                2,
+                "0"
             );
 
 
-        /* Дата */
+        const minutes =
+            String(
+                now.getMinutes()
+            ).padStart(
+                2,
+                "0"
+            );
 
-        document.getElementById("date").textContent =
-            now.toLocaleDateString(
+
+        document.getElementById(
+            "time"
+        ).textContent =
+            `${hours}:${minutes}`;
+
+
+        const dateFormatter =
+            new Intl.DateTimeFormat(
                 "ru-RU",
                 {
                     weekday: "long",
@@ -669,63 +559,67 @@
             );
 
 
-        /* Смена времени суток */
-
-        if (period !== currentPeriod) {
-
-            const widget =
-                document.getElementById("widget");
-
-
-            widget.className =
-                "widget " + period;
+        document.getElementById(
+            "date"
+        ).textContent =
+            dateFormatter
+                .format(now)
+                .replace(/^./, char =>
+                    char.toLowerCase()
+                );
 
 
-            document.getElementById("greeting").textContent =
-                greetings[period];
+        const periodKey =
+            getPeriodKey(
+                now.getHours()
+            );
 
 
-            currentPeriod = period;
+        if (
+            periodKey !==
+            currentPeriodKey
+        ) {
 
-        }
-
-
-        /* -------------------------------------- */
-        /* НОВАЯ ФРАЗА КАЖДЫЕ 30 МИНУТ */
-        /* -------------------------------------- */
-
-        const halfHour =
-            now.getMinutes() < 30 ? "0" : "1";
+            currentPeriodKey =
+                periodKey;
 
 
-        const phraseSlot =
-            period +
-            "-" +
-            now.getHours() +
-            "-" +
-            halfHour;
+            const period =
+                periods[
+                    periodKey
+                ];
 
 
-        if (phraseSlot !== currentPhraseSlot) {
+            currentPhrase =
+                choosePhrase(
+                    period.phrases
+                );
 
-            document.getElementById("phrase").textContent =
-                choosePhrase(period);
+
+            document.getElementById(
+                "greeting"
+            ).textContent =
+                period.greeting;
 
 
-            currentPhraseSlot =
-                phraseSlot;
+            document.getElementById(
+                "phrase"
+            ).textContent =
+                currentPhrase;
+
+
+            document.getElementById(
+                "widget"
+            ).style.backgroundImage =
+                `url("${period.image}")`;
 
         }
 
     }
 
 
-    /* Первый запуск */
-
     updateClock();
 
-
-    /* Обновление часов */
 
     setInterval(
         updateClock,
