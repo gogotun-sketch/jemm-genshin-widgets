@@ -8,25 +8,15 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Library statistics</title>
+    <title>Library Pages</title>
 
-
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
-
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Manrope:wght@400;500;600&display=swap"
         rel="stylesheet"
     >
-
 
     <style>
 
@@ -34,28 +24,37 @@
             box-sizing: border-box;
         }
 
-
         html,
         body {
             margin: 0;
             padding: 0;
 
             width: 100%;
-            min-height: 100%;
+            height: 100%;
+
+            overflow: hidden;
 
             background: #191919;
+        }
 
+        body {
             font-family:
                 "Manrope",
                 sans-serif;
         }
 
 
+        /* =========================
+           ВЕСЬ ВИДЖЕТ
+           ========================= */
+
         .widget {
             position: relative;
 
-            width: 100%;
-            height: 300px;
+            width: 100vw;
+            height: 100vh;
+
+            min-height: 260px;
 
             overflow: hidden;
 
@@ -65,24 +64,14 @@
                 url("./images/library-pages.png");
 
             background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
 
-            background-position:
-                center center;
-
-            color: #fffaf2;
-
-            box-shadow:
-                0 8px 24px
-                rgba(0, 0, 0, 0.18);
+            color: #fff8ef;
         }
 
 
-        /*
-        Затемняем в первую очередь
-        левую часть под текст.
-        Справа картинка остается
-        практически нетронутой.
-        */
+        /* затемнение картинки */
 
         .widget::before {
             content: "";
@@ -93,80 +82,44 @@
             background:
                 linear-gradient(
                     90deg,
-
-                    rgba(20, 13, 8, 0.78)
-                        0%,
-
-                    rgba(20, 13, 8, 0.62)
-                        24%,
-
-                    rgba(20, 13, 8, 0.30)
-                        46%,
-
-                    rgba(20, 13, 8, 0.08)
-                        70%,
-
-                    rgba(20, 13, 8, 0.02)
-                        100%
+                    rgba(19, 12, 8, 0.67) 0%,
+                    rgba(19, 12, 8, 0.46) 50%,
+                    rgba(19, 12, 8, 0.28) 100%
                 );
 
             z-index: 1;
         }
 
 
-        /*
-        Немного затемнения снизу,
-        чтобы картинка выглядела
-        цельнее в Notion.
-        */
-
-        .widget::after {
-            content: "";
-
-            position: absolute;
-            inset: 0;
-
-            background:
-                linear-gradient(
-                    to top,
-
-                    rgba(14, 10, 8, 0.32)
-                        0%,
-
-                    transparent
-                        46%
-                );
-
-            z-index: 1;
-
-            pointer-events: none;
-        }
-
+        /* =========================
+           КОНТЕНТ
+           ========================= */
 
         .content {
-            position: absolute;
-
-            left: 0;
-            top: 0;
-            bottom: 0;
+            position: relative;
 
             z-index: 2;
 
-            width: min(
-                48%,
-                570px
-            );
+            width: 100%;
+            height: 100%;
 
             display: flex;
-
             flex-direction: column;
 
             justify-content: center;
+            align-items: flex-start;
 
             padding:
-                28px 34px;
+                30px
+                34px;
+
+            text-align: left;
         }
 
+
+        /* =========================
+           ЧИСЛО
+           ========================= */
 
         .number {
             font-family:
@@ -175,83 +128,86 @@
 
             font-size:
                 clamp(
-                    72px,
-                    8vw,
-                    112px
+                    64px,
+                    11vw,
+                    96px
                 );
 
-            line-height: 0.82;
+            line-height: 0.88;
 
-            font-weight: 700;
+            font-weight: 600;
 
-            letter-spacing:
-                -0.045em;
+            letter-spacing: -0.04em;
 
-            color: #fff8ea;
+            color: #fff7ea;
 
             text-shadow:
-                0 3px 12px
-                    rgba(0, 0, 0, 0.65),
-
-                0 8px 30px
-                    rgba(0, 0, 0, 0.32);
+                0 4px 20px
+                rgba(0, 0, 0, 0.55);
         }
 
 
+        /* =========================
+           ПОДПИСЬ
+           ========================= */
+
         .meta {
-            margin-top: 26px;
+            margin-top: 18px;
+
+            font-family:
+                "Manrope",
+                sans-serif;
 
             font-size:
                 clamp(
                     11px,
-                    1.1vw,
+                    1.8vw,
                     14px
                 );
 
-            font-weight: 600;
+            font-weight: 500;
 
-            letter-spacing:
-                0.04em;
-
-            text-transform:
-                lowercase;
+            letter-spacing: 0.04em;
 
             color:
                 rgba(
                     255,
-                    239,
-                    217,
-                    0.80
+                    237,
+                    215,
+                    0.78
                 );
 
             text-shadow:
                 0 2px 8px
-                    rgba(0, 0, 0, 0.68);
+                rgba(0, 0, 0, 0.55);
         }
 
 
+        /* =========================
+           РАЗДЕЛИТЕЛЬ
+           ========================= */
+
         .divider {
-            width: 58px;
+            width: 54px;
             height: 1px;
 
             margin:
-                18px 0 15px;
+                16px
+                0
+                14px;
 
             background:
                 linear-gradient(
                     90deg,
-
-                    rgba(
-                        240,
-                        199,
-                        137,
-                        0.95
-                    ),
-
+                    rgba(232, 181, 115, 0.95),
                     transparent
                 );
         }
 
+
+        /* =========================
+           ФРАЗА
+           ========================= */
 
         .phrase {
             max-width: 420px;
@@ -262,12 +218,12 @@
 
             font-size:
                 clamp(
-                    19px,
-                    1.8vw,
-                    25px
+                    21px,
+                    3.4vw,
+                    29px
                 );
 
-            line-height: 1.12;
+            line-height: 1.15;
 
             font-style: italic;
 
@@ -276,81 +232,52 @@
             color:
                 rgba(
                     255,
-                    244,
-                    228,
+                    247,
+                    235,
                     0.94
                 );
 
             text-shadow:
-                0 2px 9px
-                    rgba(0, 0, 0, 0.72),
-
-                0 6px 20px
-                    rgba(0, 0, 0, 0.34);
+                0 3px 12px
+                rgba(0, 0, 0, 0.58);
         }
 
 
-        /*
-        Пока идет первый запрос,
-        цифра не дергается.
-        */
+        /* =========================
+           ОШИБКА
+           ========================= */
 
-        .number.loading {
-            opacity: 0.65;
+        .error {
+            font-family:
+                "Manrope",
+                sans-serif;
+
+            font-size: 13px;
+
+            color:
+                rgba(
+                    255,
+                    235,
+                    215,
+                    0.75
+                );
         }
 
 
-        @media (
-            max-width: 700px
-        ) {
+        /* =========================
+           УЗКИЙ ВИДЖЕТ
+           ========================= */
 
-            .widget {
-                height: 280px;
-
-                background-position:
-                    58% center;
-            }
-
-
-            .widget::before {
-
-                background:
-                    linear-gradient(
-                        90deg,
-
-                        rgba(
-                            20,
-                            13,
-                            8,
-                            0.82
-                        )
-                            0%,
-
-                        rgba(
-                            20,
-                            13,
-                            8,
-                            0.58
-                        )
-                            48%,
-
-                        rgba(
-                            20,
-                            13,
-                            8,
-                            0.10
-                        )
-                            100%
-                    );
-
-            }
-
+        @media (max-width: 500px) {
 
             .content {
-                width: 70%;
-
                 padding:
-                    24px 22px;
+                    25px
+                    28px;
+            }
+
+            .phrase {
+                max-width: 90%;
             }
 
         }
@@ -361,51 +288,48 @@
 
 <body>
 
-    <div class="widget">
+<div class="widget">
 
-        <div class="content">
+    <div class="content">
 
-            <div
-                class="number loading"
-                id="pages-number"
-            >
-                —
-            </div>
-
-
-            <div
-                class="meta"
-                id="pages-meta"
-            >
-                страниц прочитано · 2026
-            </div>
+        <div
+            class="number"
+            id="pages"
+        >
+            —
+        </div>
 
 
-            <div class="divider"></div>
+        <div
+            class="meta"
+            id="meta"
+        >
+            страниц прочитано · 2026
+        </div>
 
 
-            <div class="phrase">
-                Все это началось с одной страницы.
-            </div>
+        <div class="divider"></div>
 
+
+        <div
+            class="phrase"
+            id="phrase"
+        >
+            Все это началось с одной страницы.
         </div>
 
     </div>
 
+</div>
+
 
 <script>
 
-    const numberElement =
-        document.getElementById(
-            "pages-number"
-        );
+    const DATA_URL =
+        "../data/library.json";
 
 
-    const STORAGE_KEY =
-        "jemm-library-pages-2026";
-
-
-    function formatPages(value) {
+    function formatNumber(value) {
 
         return new Intl.NumberFormat(
             "ru-RU"
@@ -414,71 +338,36 @@
     }
 
 
-    /*
-    Если Notion / Netlify однажды
-    ответят медленно, сначала показываем
-    последнее удачное значение.
-    */
-
-    function loadCachedValue() {
-
-        const cached =
-            localStorage.getItem(
-                STORAGE_KEY
-            );
-
-
-        if (!cached) {
-            return;
-        }
-
-
-        const number =
-            Number(cached);
-
-
-        if (
-            !Number.isNaN(number)
-        ) {
-
-            numberElement.textContent =
-                formatPages(number);
-
-
-            numberElement.classList.remove(
-                "loading"
-            );
-
-        }
-
-    }
-
-
-    async function loadLibraryStats() {
+    async function loadStats() {
 
         try {
 
             const response =
                 await fetch(
-                    "/.netlify/functions/library-stats"
+                    DATA_URL +
+                    "?t=" +
+                    Date.now(),
+                    {
+                        cache: "no-store"
+                    }
                 );
 
 
             if (!response.ok) {
 
                 throw new Error(
-                    `Stats request failed: ${response.status}`
+                    `HTTP ${response.status}`
                 );
 
             }
 
 
-            const stats =
+            const data =
                 await response.json();
 
 
             if (
-                typeof stats.pages !==
+                typeof data.pages !==
                 "number"
             ) {
 
@@ -489,67 +378,58 @@
             }
 
 
-            numberElement.textContent =
-                formatPages(
-                    stats.pages
+            document.getElementById(
+                "pages"
+            ).textContent =
+                formatNumber(
+                    data.pages
                 );
 
 
-            numberElement.classList.remove(
-                "loading"
-            );
-
-
-            localStorage.setItem(
-                STORAGE_KEY,
-                String(
-                    stats.pages
-                )
-            );
-
-
-            console.log(
-                "Library stats updated:",
-                stats
-            );
+            document.getElementById(
+                "meta"
+            ).textContent =
+                `страниц прочитано · ${data.year ?? 2026}`;
 
         }
 
         catch (error) {
 
             console.error(
-                "Не удалось обновить книжный счетчик:",
+                "Library stats error:",
                 error
             );
+
+
+            document.getElementById(
+                "pages"
+            ).textContent =
+                "—";
+
+
+            document.getElementById(
+                "meta"
+            ).textContent =
+                "не удалось обновить статистику";
 
         }
 
     }
 
 
-    /*
-    Сначала мгновенно показываем
-    кеш, если он есть.
-    */
+    /* первый запуск */
 
-    loadCachedValue();
+    loadStats();
 
 
     /*
-    Затем запрашиваем актуальное
-    значение из Notion.
-    */
-
-    loadLibraryStats();
-
-
-    /*
-    И обновляемся каждые 5 минут
-    без перезагрузки страницы Notion.
+    Проверяем свежий JSON каждые 5 минут.
+    Сам GitHub Action обновляет его
+    каждые 15 минут.
     */
 
     setInterval(
-        loadLibraryStats,
+        loadStats,
         5 * 60 * 1000
     );
 
