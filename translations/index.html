@@ -29,6 +29,7 @@ rel="stylesheet">
 }
 
 
+
 html,
 body {
 
@@ -39,7 +40,17 @@ body {
 
     overflow:hidden;
 
-    background:#171414;
+    background:#243528;
+
+}
+
+
+
+body {
+
+    font-family:
+    "Manrope",
+    sans-serif;
 
 }
 
@@ -47,56 +58,128 @@ body {
 
 .widget {
 
+
     width:100vw;
     height:100vh;
 
+
     min-height:260px;
+
 
     border-radius:18px;
 
+
     overflow:hidden;
 
+
     position:relative;
+
 
 
     background-image:
     url("./images/background.png");
 
+
+
     background-size:cover;
+
 
     background-position:center;
 
 
-    color:#fff6e8;
+
+    color:#fff8e8;
 
 }
 
+
+
+/*
+    мягкая зеленая подложка
+    под стиль Sim Garden
+*/
 
 
 .widget::before {
 
+
     content:"";
 
+
     position:absolute;
+
 
     inset:0;
 
 
+
     background:
+
+
     linear-gradient(
+
         90deg,
 
-        rgba(18,13,11,.82) 0%,
 
-        rgba(18,13,11,.65) 35%,
+        rgba(40,55,35,.55) 0%,
 
-        rgba(18,13,11,.25) 65%,
 
-        rgba(18,13,11,.05) 100%
+        rgba(45,60,38,.38) 38%,
+
+
+        rgba(45,60,38,.12) 70%,
+
+
+        rgba(45,60,38,.03) 100%
+
     );
 
 
+
+    z-index:1;
+
 }
+
+
+
+
+/*
+    теплое свечение
+*/
+
+
+.widget::after {
+
+
+    content:"";
+
+
+    position:absolute;
+
+
+    inset:0;
+
+
+
+    background:
+
+
+    radial-gradient(
+
+        circle at 18% 50%,
+
+        rgba(255,240,190,.18),
+
+        transparent 45%
+
+    );
+
+
+
+    z-index:1;
+
+}
+
 
 
 
@@ -105,25 +188,34 @@ body {
 
     position:relative;
 
+
     z-index:2;
+
 
 
     height:100%;
 
+
     width:55%;
+
 
 
     display:flex;
 
+
     flex-direction:column;
 
+
     justify-content:center;
+
 
 
     padding-left:7%;
 
 
+
 }
+
 
 
 
@@ -132,32 +224,54 @@ body {
 
 
     font-family:
+
     "Cormorant Garamond",
+
     serif;
 
 
+
     font-size:
+
     clamp(
+
         70px,
+
         12vw,
+
         115px
+
     );
+
 
 
     line-height:.8;
 
 
+
     font-weight:600;
+
 
 
     letter-spacing:-.04em;
 
 
+
+    color:#fff8e8;
+
+
+
     text-shadow:
-    0 4px 20px rgba(0,0,0,.65);
+
+
+    0 3px 12px
+
+    rgba(30,40,20,.45);
+
 
 
 }
+
 
 
 
@@ -165,50 +279,94 @@ body {
 .label {
 
 
+
     margin-top:15px;
 
 
-    font-family:
-    "Manrope",
-    sans-serif;
-
 
     font-size:
+
     clamp(
+
         11px,
+
         1.6vw,
+
         15px
+
     );
+
 
 
     letter-spacing:.08em;
 
 
+
     text-transform:uppercase;
 
 
+
     color:
-    rgba(255,239,215,.75);
+
+    rgba(
+
+        255,
+
+        246,
+
+        220,
+
+        .88
+
+    );
+
+
+
+    text-shadow:
+
+
+    0 2px 6px
+
+    rgba(40,40,20,.35);
+
 
 
 }
 
 
 
+
+
 .divider {
+
 
 
     width:55px;
 
+
     height:1px;
 
 
+
     margin:
+
     18px 0 15px;
 
 
+
     background:
-    rgba(238,190,125,.8);
+
+
+    linear-gradient(
+
+        90deg,
+
+        rgba(224,190,120,.9),
+
+        transparent
+
+    );
+
 
 
 }
@@ -219,29 +377,69 @@ body {
 .phrase {
 
 
+
     max-width:360px;
 
 
+
     font-family:
+
     "Cormorant Garamond",
+
     serif;
+
 
 
     font-style:italic;
 
 
+
     font-size:
+
     clamp(
+
         22px,
+
         3vw,
+
         32px
+
     );
+
 
 
     line-height:1.15;
 
 
+
+    color:
+
+
+    rgba(
+
+        255,
+
+        249,
+
+        235,
+
+        .95
+
+    );
+
+
+
+    text-shadow:
+
+
+    0 2px 10px
+
+    rgba(30,40,20,.45);
+
+
+
 }
+
 
 
 
@@ -249,43 +447,69 @@ body {
 .mods {
 
 
+
     margin-top:18px;
 
-
-    font-family:
-    "Manrope",
-    sans-serif;
 
 
     font-size:12px;
 
 
+
     color:
-    rgba(255,235,210,.55);
+
+
+    rgba(
+
+        255,
+
+        240,
+
+        210,
+
+        .75
+
+    );
+
+
+
+    text-shadow:
+
+
+    0 2px 6px
+
+    rgba(30,40,20,.4);
+
+
 
 }
+
+
 
 
 
 @media(max-width:600px){
 
 
-.content {
 
-    width:100%;
+    .content {
 
-    padding:
-    25px;
+        width:100%;
 
-}
+        padding:25px;
+
+    }
 
 
-.widget::before {
 
-background:
-rgba(18,13,11,.65);
+    .widget::before {
 
-}
+        background:
+
+        rgba(45,60,38,.42);
+
+    }
+
 
 
 }
@@ -356,7 +580,10 @@ id="mods">
 
 
 const DATA_URL =
+
 "https://raw.githubusercontent.com/gogotun-sketch/jemm-genshin-widgets/main/data/translations.json";
+
+
 
 
 
@@ -367,57 +594,99 @@ try {
 
 
 const response =
+
 await fetch(
-DATA_URL+"?v="+Date.now()
+
+DATA_URL +
+
+"?v=" +
+
+Date.now(),
+
+{
+
+cache:"no-store"
+
+}
+
 );
 
 
 
+
 const data =
+
 await response.json();
 
 
 
+
 document
+
 .getElementById("lines")
+
 .textContent =
+
 new Intl.NumberFormat("ru-RU")
-.format(data.totalLines);
+
+.format(
+
+data.totalLines
+
+);
+
+
 
 
 
 document
+
 .getElementById("mods")
+
 .textContent =
-`${data.modsCount} модов в очереди`;
+
+`${data.modsCount} модов нашли свой перевод`;
 
 
 
-}
-
-catch(e){
-
-console.error(e);
 
 }
 
 
+catch(error){
+
+
+console.error(
+
+error
+
+);
+
+
 }
+
+
+}
+
 
 
 
 loadStats();
 
 
+
+
 setInterval(
+
 loadStats,
+
 300000
+
 );
 
 
 
 </script>
-
 
 
 </body>
