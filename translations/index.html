@@ -40,7 +40,7 @@ body {
 
     overflow:hidden;
 
-    background:#243528;
+    background:#26382b;
 
 }
 
@@ -56,35 +56,22 @@ body {
 
 
 
+
 .widget {
 
 
+    position:relative;
+
+
     width:100vw;
+
     height:100vh;
 
 
     min-height:260px;
 
 
-    border-radius:12px;
-
-
     overflow:hidden;
-
-
-    position:relative;
-
-
-
-    background-image:
-    url("./images/background.png");
-
-
-
-    background-size:cover;
-
-
-    background-position:center center;
 
 
 
@@ -94,13 +81,58 @@ body {
 
 
 
+
 /*
-    мягкая зеленая подложка
-    под стиль Sim Garden
+    СЛОЙ КАРТИНКИ
 */
 
 
 .widget::before {
+
+
+    content:"";
+
+
+    position:absolute;
+
+
+    inset:0;
+
+
+
+    background-image:
+
+    url("./images/background.png");
+
+
+
+    background-size:
+
+    cover;
+
+
+
+    background-position:
+
+    center;
+
+
+
+    z-index:0;
+
+
+}
+
+
+
+
+
+/*
+    СВЕТЛОЕ ЗЕЛЕНОЕ ЗАТЕМНЕНИЕ
+*/
+
+
+.widget::after {
 
 
     content:"";
@@ -121,16 +153,16 @@ body {
         90deg,
 
 
-        rgba(40,55,35,.55) 0%,
+        rgba(45,65,42,.42) 0%,
 
 
-        rgba(45,60,38,.38) 38%,
+        rgba(55,75,48,.25) 38%,
 
 
-        rgba(45,60,38,.12) 70%,
+        rgba(55,75,48,.08) 70%,
 
 
-        rgba(45,60,38,.03) 100%
+        rgba(55,75,48,.02) 100%
 
     );
 
@@ -138,14 +170,12 @@ body {
 
     z-index:1;
 
+
 }
 
 
 
 
-/*
-    теплое свечение
-*/
 
 
 .content {
@@ -161,6 +191,7 @@ body {
     height:100%;
 
 
+
     width:55%;
 
 
@@ -169,6 +200,7 @@ body {
 
 
     flex-direction:column;
+
 
 
     justify-content:center;
@@ -180,7 +212,6 @@ body {
 
 
 }
-
 
 
 
@@ -198,6 +229,7 @@ body {
 
     font-size:
 
+
     clamp(
 
         70px,
@@ -210,7 +242,7 @@ body {
 
 
 
-    line-height:.8;
+    line-height:.82;
 
 
 
@@ -218,20 +250,20 @@ body {
 
 
 
-    letter-spacing:-.04em;
+    letter-spacing:-.045em;
 
 
 
-    color:#fff8e8;
+    color:#fff9eb;
 
 
 
     text-shadow:
 
 
-    0 3px 12px
+    0 3px 14px
 
-    rgba(30,40,20,.45);
+    rgba(30,45,25,.55);
 
 
 
@@ -244,12 +276,12 @@ body {
 .label {
 
 
-
     margin-top:15px;
 
 
 
     font-size:
+
 
     clamp(
 
@@ -257,7 +289,7 @@ body {
 
         1.6vw,
 
-        15px
+        14px
 
     );
 
@@ -273,15 +305,16 @@ body {
 
     color:
 
+
     rgba(
 
         255,
 
-        246,
+        247,
 
-        220,
+        225,
 
-        .88
+        .86
 
     );
 
@@ -290,9 +323,9 @@ body {
     text-shadow:
 
 
-    0 2px 6px
+    0 2px 7px
 
-    rgba(40,40,20,.35);
+    rgba(30,45,25,.5);
 
 
 
@@ -305,7 +338,6 @@ body {
 .divider {
 
 
-
     width:55px;
 
 
@@ -314,6 +346,7 @@ body {
 
 
     margin:
+
 
     18px 0 15px;
 
@@ -326,12 +359,13 @@ body {
 
         90deg,
 
-        rgba(224,190,120,.9),
+
+        rgba(230,195,125,.9),
+
 
         transparent
 
     );
-
 
 
 }
@@ -342,8 +376,7 @@ body {
 .phrase {
 
 
-
-    max-width:360px;
+    max-width:390px;
 
 
 
@@ -360,6 +393,7 @@ body {
 
 
     font-size:
+
 
     clamp(
 
@@ -397,9 +431,9 @@ body {
     text-shadow:
 
 
-    0 2px 10px
+    0 3px 12px
 
-    rgba(30,40,20,.45);
+    rgba(30,45,25,.55);
 
 
 
@@ -410,7 +444,6 @@ body {
 
 
 .mods {
-
 
 
     margin-top:18px;
@@ -428,9 +461,9 @@ body {
 
         255,
 
-        240,
+        242,
 
-        210,
+        215,
 
         .75
 
@@ -441,9 +474,9 @@ body {
     text-shadow:
 
 
-    0 2px 6px
+    0 2px 8px
 
-    rgba(30,40,20,.4);
+    rgba(30,45,25,.5);
 
 
 
@@ -453,28 +486,32 @@ body {
 
 
 
-@media(max-width:600px){
 
+@media(max-width:700px){
 
 
     .content {
 
         width:100%;
 
-        padding:25px;
+        padding:
+
+        25px;
 
     }
 
 
 
-    .widget::before {
+    .widget::after {
+
 
         background:
 
-        rgba(45,60,38,.42);
+
+        rgba(45,65,42,.35);
+
 
     }
-
 
 
 }
@@ -487,7 +524,9 @@ body {
 </head>
 
 
+
 <body>
+
 
 
 <div class="widget">
@@ -496,11 +535,15 @@ body {
 <div class="content">
 
 
+
 <div
 class="number"
 id="lines">
+
 —
+
 </div>
+
 
 
 
@@ -512,7 +555,9 @@ id="lines">
 
 
 
+
 <div class="divider"></div>
+
 
 
 
@@ -521,6 +566,7 @@ id="lines">
 Пара строк — это ведь недолго. Правда?
 
 </div>
+
 
 
 
@@ -534,10 +580,14 @@ id="mods">
 
 
 
+
 </div>
 
 
+
 </div>
+
+
 
 
 
@@ -578,7 +628,6 @@ cache:"no-store"
 
 
 
-
 const data =
 
 await response.json();
@@ -586,18 +635,16 @@ await response.json();
 
 
 
+
 document
-
 .getElementById("lines")
-
 .textContent =
 
-new Intl.NumberFormat("ru-RU")
-
+new Intl.NumberFormat(
+"ru-RU"
+)
 .format(
-
 data.totalLines
-
 );
 
 
@@ -605,39 +652,32 @@ data.totalLines
 
 
 document
-
 .getElementById("mods")
-
 .textContent =
 
-`${data.modsCount} модов нашли свой перевод`;
-
+`${data.modsCount} модов обрели свой голос`;
 
 
 
 }
-
 
 catch(error){
 
 
 console.error(
-
 error
-
 );
 
 
 }
 
 
+
 }
 
 
 
-
 loadStats();
-
 
 
 
@@ -652,6 +692,7 @@ loadStats,
 
 
 </script>
+
 
 
 </body>
