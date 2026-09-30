@@ -1,4 +1,4 @@
-name: Update Genshin and Daybook Stats
+name: Update Widget Stats
 
 on:
   workflow_dispatch:
@@ -32,6 +32,11 @@ jobs:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         run: node scripts/update-daybook.mjs
 
+      - name: Update translation statistics
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: node scripts/update-translations.mjs
+
       - name: Commit updated statistics
         run: |
           git config user.name "github-actions[bot]"
@@ -39,10 +44,11 @@ jobs:
 
           git add data/genshin.json
           git add data/daybook.json
+          git add data/translations.json
 
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Update Genshin and Daybook statistics"
+            git commit -m "Update widget statistics"
             git push
           fi
