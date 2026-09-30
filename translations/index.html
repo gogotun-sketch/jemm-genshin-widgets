@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+>
+
+<title>Translation Stats</title>
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600&display=swap"
+rel="stylesheet">
+
+
+<style>
+
+
+* {
+    box-sizing:border-box;
+}
+
+
+html,
+body {
+
+    margin:0;
+
+    width:100%;
+    height:100%;
+
+    overflow:hidden;
+
+    background:#171414;
+
+}
+
+
+
+.widget {
+
+    width:100vw;
+    height:100vh;
+
+    min-height:260px;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    position:relative;
+
+
+    background-image:
+    url("./images/background.png");
+
+    background-size:cover;
+
+    background-position:center;
+
+
+    color:#fff6e8;
+
+}
+
+
+
+.widget::before {
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+
+    background:
+    linear-gradient(
+        90deg,
+
+        rgba(18,13,11,.82) 0%,
+
+        rgba(18,13,11,.65) 35%,
+
+        rgba(18,13,11,.25) 65%,
+
+        rgba(18,13,11,.05) 100%
+    );
+
+
+}
+
+
+
+.content {
+
+
+    position:relative;
+
+    z-index:2;
+
+
+    height:100%;
+
+    width:55%;
+
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+
+    padding-left:7%;
+
+
+}
+
+
+
+
+.number {
+
+
+    font-family:
+    "Cormorant Garamond",
+    serif;
+
+
+    font-size:
+    clamp(
+        70px,
+        12vw,
+        115px
+    );
+
+
+    line-height:.8;
+
+
+    font-weight:600;
+
+
+    letter-spacing:-.04em;
+
+
+    text-shadow:
+    0 4px 20px rgba(0,0,0,.65);
+
+
+}
+
+
+
+
+.label {
+
+
+    margin-top:15px;
+
+
+    font-family:
+    "Manrope",
+    sans-serif;
+
+
+    font-size:
+    clamp(
+        11px,
+        1.6vw,
+        15px
+    );
+
+
+    letter-spacing:.08em;
+
+
+    text-transform:uppercase;
+
+
+    color:
+    rgba(255,239,215,.75);
+
+
+}
+
+
+
+.divider {
+
+
+    width:55px;
+
+    height:1px;
+
+
+    margin:
+    18px 0 15px;
+
+
+    background:
+    rgba(238,190,125,.8);
+
+
+}
+
+
+
+
+.phrase {
+
+
+    max-width:360px;
+
+
+    font-family:
+    "Cormorant Garamond",
+    serif;
+
+
+    font-style:italic;
+
+
+    font-size:
+    clamp(
+        22px,
+        3vw,
+        32px
+    );
+
+
+    line-height:1.15;
+
+
+}
+
+
+
+
+.mods {
+
+
+    margin-top:18px;
+
+
+    font-family:
+    "Manrope",
+    sans-serif;
+
+
+    font-size:12px;
+
+
+    color:
+    rgba(255,235,210,.55);
+
+}
+
+
+
+@media(max-width:600px){
+
+
+.content {
+
+    width:100%;
+
+    padding:
+    25px;
+
+}
+
+
+.widget::before {
+
+background:
+rgba(18,13,11,.65);
+
+}
+
+
+}
+
+
+
+</style>
+
+
+</head>
+
+
+<body>
+
+
+<div class="widget">
+
+
+<div class="content">
+
+
+<div
+class="number"
+id="lines">
+—
+</div>
+
+
+
+<div class="label">
+
+строк переведено
+
+</div>
+
+
+
+<div class="divider"></div>
+
+
+
+<div class="phrase">
+
+Пара строк — это ведь недолго. Правда?
+
+</div>
+
+
+
+<div
+class="mods"
+id="mods">
+
+—
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+<script>
+
+
+const DATA_URL =
+"https://raw.githubusercontent.com/gogotun-sketch/jemm-genshin-widgets/main/data/translations.json";
+
+
+
+async function loadStats(){
+
+
+try {
+
+
+const response =
+await fetch(
+DATA_URL+"?v="+Date.now()
+);
+
+
+
+const data =
+await response.json();
+
+
+
+document
+.getElementById("lines")
+.textContent =
+new Intl.NumberFormat("ru-RU")
+.format(data.totalLines);
+
+
+
+document
+.getElementById("mods")
+.textContent =
+`${data.modsCount} модов в очереди`;
+
+
+
+}
+
+catch(e){
+
+console.error(e);
+
+}
+
+
+}
+
+
+
+loadStats();
+
+
+setInterval(
+loadStats,
+300000
+);
+
+
+
+</script>
+
+
+
+</body>
+
+</html>
