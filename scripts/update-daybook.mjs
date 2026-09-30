@@ -7,11 +7,17 @@ const DAYBOOK_ID =
 
 
 if (!NOTION_TOKEN) {
+
     throw new Error(
         "NOTION_TOKEN is missing"
     );
+
 }
 
+
+/* =========================
+   ЗАГРУЗКА ВСЕХ СТРАНИЦ
+   ========================= */
 
 async function queryAll() {
 
@@ -27,8 +33,10 @@ async function queryAll() {
 
 
         if (cursor) {
+
             body.start_cursor =
                 cursor;
+
         }
 
 
@@ -39,6 +47,7 @@ async function queryAll() {
                     method: "POST",
 
                     headers: {
+
                         Authorization:
                             `Bearer ${NOTION_TOKEN}`,
 
@@ -47,12 +56,14 @@ async function queryAll() {
 
                         "Content-Type":
                             "application/json"
+
                     },
 
                     body:
                         JSON.stringify(
                             body
                         )
+
                 }
             );
 
@@ -61,6 +72,7 @@ async function queryAll() {
 
             const text =
                 await response.text();
+
 
             throw new Error(
                 `Notion API error ${response.status}: ${text}`
@@ -92,7 +104,12 @@ async function queryAll() {
 }
 
 
-function getMoscowDateParts() {
+/* =========================
+   ТЕКУЩИЙ ГОД И МЕСЯЦ
+   ПО МОСКВЕ
+   ========================= */
+
+function getCurrentMoscowMonth() {
 
     const formatter =
         new Intl.DateTimeFormat(
@@ -105,9 +122,6 @@ function getMoscowDateParts() {
                     "numeric",
 
                 month:
-                    "2-digit",
-
-                day:
                     "2-digit"
             }
         );
@@ -119,7 +133,7 @@ function getMoscowDateParts() {
         );
 
 
-    const map =
+    const values =
         Object.fromEntries(
             parts.map(
                 part => [
@@ -131,21 +145,94 @@ function getMoscowDateParts() {
 
 
     return {
+
         year:
-            Number(map.year),
+            Number(
+                values.year
+            ),
 
         month:
-            Number(map.month),
+            Number(
+                values.month
+            )
 
-        day:
-            Number(map.day)
     };
 
 }
 
 
-const now =
-    getMoscowDateParts();
+/* =========================
+   РАЗБОР ДАТЫ NOTION
+   ========================= */
+
+/*
+Notion может вернуть:
+
+2026-09-30
+
+или:
+
+2026-09-30T12:00:00.000+03:00
+
+Нам нужны только первые
+год и месяц.
+*/
+
+function parseNotionDate(
+    dateString
+) {
+
+    if (
+        typeof dateString !==
+        "string"
+    ) {
+
+        return null;
+
+    }
+
+
+    const match =
+        dateString.match(
+            /^(\d{4})-(\d{2})-(\d{2})/
+        );
+
+
+    if (!match) {
+
+        return null;
+
+    }
+
+
+    return {
+
+        year:
+            Number(
+                match[1]
+            ),
+
+        month:
+            Number(
+                match[2]
+            ),
+
+        day:
+            Number(
+                match[3]
+            )
+
+    };
+
+}
+
+
+/* =========================
+   ПОДСЧЕТ
+   ========================= */
+
+const current =
+    getCurrentMoscowMonth();
 
 
 const pages =
@@ -156,7 +243,9 @@ let monthDone = 0;
 let yearDone = 0;
 
 
-for (const page of pages) {
+for (
+    const page of pages
+) {
 
     const done =
         page.properties?.["Done"]
@@ -170,63 +259,44 @@ for (const page of pages) {
 
 
     if (
-        !done ||
+        done !== true ||
         !doneDate
     ) {
+
         continue;
+
     }
 
 
-    const date =
-        new Date(
-            `${doneDate}T12:00:00+03:00`
+    const parsed =
+        parseNotionDate(
+            doneDate
         );
 
 
-    const parts =
-        new Intl.DateTimeFormat(
-            "en-CA",
-            {
-                timeZone:
-                    "Europe/Moscow",
+    if (!parsed) {
 
-                year:
-                    "numeric",
-
-                month:
-                    "2-digit"
-            }
-        ).formatToParts(date);
-
-
-    const map =
-        Object.fromEntries(
-            parts.map(
-                part => [
-                    part.type,
-                    part.value
-                ]
-            )
+        console.warn(
+            "Could not parse Done Date:",
+            doneDate
         );
 
+        continue;
 
-    const year =
-        Number(map.year);
-
-
-    const month =
-        Number(map.month);
+    }
 
 
     if (
-        year === now.year
+        parsed.year ===
+        current.year
     ) {
 
         yearDone++;
 
 
         if (
-            month === now.month
+            parsed.month ===
+            current.month
         ) {
 
             monthDone++;
@@ -238,20 +308,28 @@ for (const page of pages) {
 }
 
 
+/* =========================
+   JSON
+   ========================= */
+
 const output = {
 
-    monthDone,
+    monthDone:
+        monthDone,
 
-    yearDone,
+    yearDone:
+        yearDone,
 
     month:
-        now.month,
+        current.month,
 
     year:
-        now.year,
+        current.year,
 
     updatedAt:
-        new Date().toISOString()
+        new Date()
+            .toISOString()
+
 };
 
 
@@ -270,6 +348,7 @@ await fs.mkdir(
 
 
 await fs.writeFile(
+
     "data/daybook.json",
 
     JSON.stringify(
@@ -279,6 +358,7 @@ await fs.writeFile(
     ) + "\n",
 
     "utf8"
+
 );
 
 
