@@ -1,242 +1,218 @@
+import fs from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const NOTION_TOKEN =
+  process.env.NOTION_TOKEN ||
+  process.env.NOTION_API_KEY;
+
+const BOOKS_DATA_SOURCE_ID =
+  process.env.NOTION_BOOKS_DATA_SOURCE_ID ||
+  "eb455286-2af1-477a-9ae1-dccf91dba852";
+
 const NOTION_VERSION = "2026-03-11";
 
-const DATA_SOURCES = {
-    achievements: {
-        id: "32aaba36-5d45-4ecb-ae4f-1c62ca691e7d",
-        checkbox: "Выполнено"
-    },
-
-    characters: {
-        id: "b97e8817-d594-4849-a4a9-5174e40d8c20",
-        checkbox: "Есть"
-    }
-};
-
-
-/* Небольшая пауза между запросами к Notion */
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+if (!NOTION_TOKEN) {
+  throw new Error(
+    "Notion token is missing. Set NOTION_TOKEN in GitHub Secrets."
+  );
 }
 
+const year = Number(
+  process.env.READING_YEAR ||
+  new Date().getUTCFullYear()
+);
 
-/* Один запрос к Notion */
+if (!Number.isInteger(year)) {
+  throw new Error(
+    `Invalid READING_YEAR: ${process.env.READING_YEAR}`
+  );
+}
 
-async function queryNotion(dataSourceId, startCursor = null) {
+const startDate = `${year}-01-01`;
+const endDate = `${year + 1}-01-01`;
 
-    const body = {
-        page_size: 100
-    };
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-    if (startCursor) {
-        body.start_cursor = startCursor;
-    }
+const outputPath = path.join(
+  __dirname,
+  "..",
+  "data",
+  "library.json"
+);
 
+async function queryBooks(startCursor = null) {
+  const body = {
+    page_size: 100,
 
-    const response = await fetch(
-        `https://api.notion.com/v1/data_sources/${dataSourceId}/query`,
+    filter: {
+      and: [
         {
-            method: "POST",
+          property: "Finished",
+          date: {
+            on_or_after: startDate,
+          },
+        },
+        {
+          property: "Finished",
+          date: {
+            before: endDate,
+          },
+        },
+      ],
+    },
+  };
 
-            headers: {
-                "Authorization": `Bearer ${process.env.NOTION_TOKEN}`,
-                "Notion-Version": NOTION_VERSION,
-                "Content-Type": "application/json"
-            },
+  if (startCursor) {
+    body.start_cursor = startCursor;
+  }
 
-            body: JSON.stringify(body)
-        }
+  const response = await fetch(
+    `https://api.notion.com/v1/data_sources/${BOOKS_DATA_SOURCE_ID}/query`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${NOTION_TOKEN}`,
+        "Notion-Version": NOTION_VERSION,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    }
+  );
+
+  if (!response.ok) {
+    const details = await response.text();
+
+    throw new Error(
+      `Notion API error ${response.status}: ${details}`
+    );
+  }
+
+  return response.json();
+}
+
+function getBookTitle(book) {
+  const titleProperty = book.properties?.Title?.title;
+
+  if (!Array.isArray(titleProperty)) {
+    return "(без названия)";
+  }
+
+  const title = titleProperty
+    .map((item) => item.plain_text || "")
+    .join("")
+    .trim();
+
+  return title || "(без названия)";
+}
+
+let cursor = null;
+
+let totalPages = 0;
+let booksRead = 0;
+
+const booksWithoutPages = [];
+
+do {
+  const data = await queryBooks(cursor);
+
+  for (const book of data.results) {
+    booksRead += 1;
+
+    const pages = book.properties?.Pages?.number;
+
+    if (typeof pages === "number") {
+      totalPages += pages;
+    } else {
+      booksWithoutPages.push(
+        getBookTitle(book)
+      );
+    }
+  }
+
+  cursor =
+    data.has_more && data.next_cursor
+      ? data.next_cursor
+      : null;
+} while (cursor);
+
+/*
+ * Проверяем предыдущий JSON.
+ * Если итог не изменился, файл не трогаем.
+ */
+let previous = null;
+
+try {
+  previous = JSON.parse(
+    await fs.readFile(
+      outputPath,
+      "utf8"
+    )
+  );
+} catch {
+  // Файла еще нет или он не читается.
+  // Ниже создадим новый.
+}
+
+if (
+  previous?.pages === totalPages &&
+  previous?.year === year
+) {
+  console.log(
+    `No library changes: ${booksRead} books, ${totalPages} pages (${year})`
+  );
+
+  if (booksWithoutPages.length > 0) {
+    console.warn(
+      `Finished books without Pages (${booksWithoutPages.length}):`
     );
 
-
-    /* Если Notion попросил притормозить */
-
-    if (response.status === 429) {
-
-        const retryAfter =
-            Number(response.headers.get("retry-after")) || 1;
-
-        await sleep(retryAfter * 1000);
-
-        return queryNotion(
-            dataSourceId,
-            startCursor
-        );
+    for (const title of booksWithoutPages) {
+      console.warn(`- ${title}`);
     }
+  }
 
-
-    if (!response.ok) {
-
-        const errorText =
-            await response.text();
-
-        throw new Error(
-            `Notion API ${response.status}: ${errorText}`
-        );
-    }
-
-
-    return response.json();
+  process.exit(0);
 }
 
-
-/* Считаем все строки базы и отмеченные чекбоксы */
-
-async function countDatabase(
-    dataSourceId,
-    checkboxProperty
-) {
-
-    let total = 0;
-    let current = 0;
-
-    let cursor = null;
-    let hasMore = true;
-
-
-    while (hasMore) {
-
-        const data =
-            await queryNotion(
-                dataSourceId,
-                cursor
-            );
-
-
-        for (const page of data.results) {
-
-            total++;
-
-
-            const property =
-                page.properties?.[
-                    checkboxProperty
-                ];
-
-
-            if (
-                property &&
-                property.type === "checkbox" &&
-                property.checkbox === true
-            ) {
-
-                current++;
-
-            }
-
-        }
-
-
-        hasMore = data.has_more;
-
-        cursor =
-            data.next_cursor;
-
-
-        /*
-        Не долбим Notion слишком быстро.
-        */
-
-        if (hasMore) {
-            await sleep(350);
-        }
-
-    }
-
-
-    return {
-        current,
-        total
-    };
-}
-
-
-/* Сама Netlify Function */
-
-export default async () => {
-
-    try {
-
-        if (!process.env.NOTION_TOKEN) {
-
-            throw new Error(
-                "NOTION_TOKEN is not configured"
-            );
-
-        }
-
-
-        const achievements =
-            await countDatabase(
-                DATA_SOURCES.achievements.id,
-                DATA_SOURCES.achievements.checkbox
-            );
-
-
-        const characters =
-            await countDatabase(
-                DATA_SOURCES.characters.id,
-                DATA_SOURCES.characters.checkbox
-            );
-
-
-        return new Response(
-
-            JSON.stringify({
-                achievements,
-                characters,
-                updatedAt:
-                    new Date().toISOString()
-            }),
-
-            {
-                status: 200,
-
-                headers: {
-                    "Content-Type":
-                        "application/json; charset=utf-8",
-
-                    /*
-                    Netlify может держать результат
-                    несколько минут, чтобы не опрашивать
-                    1844 ачивки при каждом открытии Notion.
-                    */
-
-                    "Cache-Control":
-                        "public, max-age=60",
-
-                    "Netlify-CDN-Cache-Control":
-                        "public, s-maxage=300"
-                }
-            }
-
-        );
-
-    }
-
-    catch (error) {
-
-        console.error(error);
-
-
-        return new Response(
-
-            JSON.stringify({
-                error:
-                    error.message
-            }),
-
-            {
-                status: 500,
-
-                headers: {
-                    "Content-Type":
-                        "application/json; charset=utf-8"
-                }
-            }
-
-        );
-
-    }
-
+/*
+ * Формат намеренно сохраняем прежним,
+ * чтобы сам виджет менять не пришлось.
+ */
+const result = {
+  pages: totalPages,
+  year,
+  updatedAt: new Date().toISOString(),
 };
+
+await fs.mkdir(
+  path.dirname(outputPath),
+  {
+    recursive: true,
+  }
+);
+
+await fs.writeFile(
+  outputPath,
+  `${JSON.stringify(result, null, 2)}\n`,
+  "utf8"
+);
+
+console.log(
+  `Library updated: ${booksRead} books, ${totalPages} pages (${year})`
+);
+
+if (booksWithoutPages.length > 0) {
+  console.warn(
+    `Finished books without Pages (${booksWithoutPages.length}):`
+  );
+
+  for (const title of booksWithoutPages) {
+    console.warn(`- ${title}`);
+  }
+}
+
+console.log(
+  `Written to: ${outputPath}`
+);
