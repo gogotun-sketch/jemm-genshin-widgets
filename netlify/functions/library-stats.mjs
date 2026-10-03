@@ -1,194 +1,180 @@
+import fs from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const NOTION_TOKEN =
+  process.env.NOTION_TOKEN ||
+  process.env.NOTION_API_KEY;
+
+const BOOKS_DATA_SOURCE_ID =
+  process.env.NOTION_BOOKS_DATA_SOURCE_ID ||
+  "eb455286-2af1-477a-9ae1-dccf91dba852";
+
 const NOTION_VERSION = "2026-03-11";
 
-/*
-Строка:
-2026 · pages read
-
-из базы Library statistics
-*/
-const STATS_PAGE_ID =
-    "3d0cd983-9533-819b-bdfd-d106119ca7a8";
-
-
-function getFormulaValue(property) {
-
-    if (!property) {
-        throw new Error(
-            'Property "Pages read" not found'
-        );
-    }
-
-
-    if (property.type !== "formula") {
-        throw new Error(
-            '"Pages read" is not a formula property'
-        );
-    }
-
-
-    const formula = property.formula;
-
-
-    if (!formula) {
-        throw new Error(
-            '"Pages read" formula has no result'
-        );
-    }
-
-
-    /*
-    Нормальный вариант:
-    формула возвращает число.
-    */
-
-    if (formula.type === "number") {
-
-        return formula.number ?? 0;
-
-    }
-
-
-    /*
-    Запасной вариант на случай,
-    если Notion когда-нибудь вернет
-    значение строкой.
-    */
-
-    if (formula.type === "string") {
-
-        const cleaned =
-            String(formula.string ?? "")
-                .replace(/\s/g, "")
-                .replace(",", ".");
-
-
-        const number =
-            Number(cleaned);
-
-
-        if (!Number.isNaN(number)) {
-            return number;
-        }
-
-    }
-
-
-    throw new Error(
-        `Unsupported formula result type: ${formula.type}`
-    );
-
+if (!NOTION_TOKEN) {
+  throw new Error(
+    "Notion token is missing. Set NOTION_TOKEN in GitHub Secrets."
+  );
 }
 
+/*
+ * По умолчанию считаем текущий год.
+ * Если когда-нибудь понадобится принудительно считать другой:
+ * READING_YEAR=2026
+ */
+const year = Number(
+  process.env.READING_YEAR ||
+  new Date().getUTCFullYear()
+);
 
-export default async () => {
+if (!Number.isInteger(year)) {
+  throw new Error(`Invalid READING_YEAR: ${process.env.READING_YEAR}`);
+}
 
-    try {
+const startDate = `${year}-01-01`;
+const endDate = `${year + 1}-01-01`;
 
-        if (!process.env.NOTION_TOKEN) {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-            throw new Error(
-                "NOTION_TOKEN is not configured"
-            );
+const outputPath = path.join(
+  __dirname,
+  "..",
+  "data",
+  "library.json"
+);
 
-        }
+async function queryBooks(startCursor = null) {
+  const body = {
+    page_size: 100,
 
+    /*
+     * Нам не нужен Status.
+     *
+     * Если у книги Finished попадает в нужный год,
+     * считаем ее прочитанной в этом году.
+     */
+    filter: {
+      and: [
+        {
+          property: "Finished",
+          date: {
+            on_or_after: startDate,
+          },
+        },
+        {
+          property: "Finished",
+          date: {
+            before: endDate,
+          },
+        },
+      ],
+    },
+  };
 
-        const response =
-            await fetch(
-                `https://api.notion.com/v1/pages/${STATS_PAGE_ID}`,
-                {
-                    method: "GET",
+  if (startCursor) {
+    body.start_cursor = startCursor;
+  }
 
-                    headers: {
-                        "Authorization":
-                            `Bearer ${process.env.NOTION_TOKEN}`,
-
-                        "Notion-Version":
-                            NOTION_VERSION
-                    }
-                }
-            );
-
-
-        if (!response.ok) {
-
-            const errorText =
-                await response.text();
-
-
-            throw new Error(
-                `Notion API ${response.status}: ${errorText}`
-            );
-
-        }
-
-
-        const page =
-            await response.json();
-
-
-        const pages =
-            getFormulaValue(
-                page.properties?.["Pages read"]
-            );
-
-
-        return new Response(
-
-            JSON.stringify({
-                pages,
-                year: 2026,
-                updatedAt:
-                    new Date().toISOString()
-            }),
-
-            {
-                status: 200,
-
-                headers: {
-                    "Content-Type":
-                        "application/json; charset=utf-8",
-
-                    /*
-                    Браузер может проверять часто,
-                    но Netlify не будет дергать
-                    Notion каждую секунду.
-                    */
-
-                    "Cache-Control":
-                        "public, max-age=60",
-
-                    "Netlify-CDN-Cache-Control":
-                        "public, s-maxage=300"
-                }
-            }
-
-        );
-
+  const response = await fetch(
+    `https://api.notion.com/v1/data_sources/${BOOKS_DATA_SOURCE_ID}/query`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${NOTION_TOKEN}`,
+        "Notion-Version": NOTION_VERSION,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
     }
+  );
 
-    catch (error) {
+  if (!response.ok) {
+    const details = await response.text();
 
-        console.error(error);
+    throw new Error(
+      `Notion API error ${response.status}: ${details}`
+    );
+  }
 
+  return response.json();
+}
 
-        return new Response(
+function getBookTitle(book) {
+  const titleProperty = book.properties?.Title?.title;
 
-            JSON.stringify({
-                error: error.message
-            }),
+  if (!Array.isArray(titleProperty)) {
+    return "(без названия)";
+  }
 
-            {
-                status: 500,
+  const title = titleProperty
+    .map((item) => item.plain_text || "")
+    .join("")
+    .trim();
 
-                headers: {
-                    "Content-Type":
-                        "application/json; charset=utf-8"
-                }
-            }
+  return title || "(без названия)";
+}
 
-        );
+let cursor = null;
+let totalPages = 0;
+let booksRead = 0;
 
+const booksWithoutPages = [];
+
+do {
+  const data = await queryBooks(cursor);
+
+  for (const book of data.results) {
+    booksRead += 1;
+
+    const pages = book.properties?.Pages?.number;
+
+    if (typeof pages === "number") {
+      totalPages += pages;
+    } else {
+      booksWithoutPages.push(getBookTitle(book));
     }
+  }
 
+  cursor =
+    data.has_more && data.next_cursor
+      ? data.next_cursor
+      : null;
+} while (cursor);
+
+/*
+ * Формат намеренно оставляем прежним,
+ * чтобы сам виджет менять не пришлось.
+ */
+const result = {
+  pages: totalPages,
+  year,
+  updatedAt: new Date().toISOString(),
 };
+
+await fs.mkdir(path.dirname(outputPath), {
+  recursive: true,
+});
+
+await fs.writeFile(
+  outputPath,
+  `${JSON.stringify(result, null, 2)}\n`,
+  "utf8"
+);
+
+console.log(
+  `Library updated: ${booksRead} books, ${totalPages} pages (${year})`
+);
+
+if (booksWithoutPages.length > 0) {
+  console.warn(
+    `Finished books without Pages (${booksWithoutPages.length}):`
+  );
+
+  for (const title of booksWithoutPages) {
+    console.warn(`- ${title}`);
+  }
+}
+
+console.log(`Written to: ${outputPath}`);
