@@ -14,28 +14,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout repository
         uses: actions/checkout@v4
+
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
+
       - name: Update Genshin statistics
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         run: node scripts/update-genshin.mjs
+
 
       - name: Update Daybook statistics
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         run: node scripts/update-daybook.mjs
 
+
       - name: Update translation statistics
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         run: node scripts/update-translations.mjs
+
+
+      - name: Update watching statistics
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: node scripts/update-watching.mjs
+
 
       - name: Commit updated statistics
         run: |
@@ -45,6 +57,7 @@ jobs:
           git add data/genshin.json
           git add data/daybook.json
           git add data/translations.json
+          git add data/watching.json
 
           if git diff --cached --quiet; then
             echo "No changes to commit"
